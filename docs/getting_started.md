@@ -37,6 +37,7 @@ Available subcommands:
 | `paper-audit statistics` | Recalculate mean and standard deviation |
 | `paper-audit ratio` | Calculate improvement or reduction ratios |
 | `paper-audit dimensional` | Check dimensional and `P = j × V` consistency |
+| `paper-audit resistance-sum` | Check whether total Rp/ASR equals the sum of listed components |
 
 ## 5. Run tests
 
@@ -54,3 +55,13 @@ paper-audit dimensional \
 ```
 
 Expected interpretation: if the reported power density equals `current density × voltage` within tolerance, the relation is numerically consistent.
+
+## Example: resistance component-sum check
+
+```bash
+paper-audit resistance-sum \
+  --reported-total 0.180 \
+  --components 0.052 0.061 0.038
+```
+
+Expected interpretation: if the reported total equals the sum of listed components within tolerance, the component-sum relation is numerically consistent.
