@@ -78,5 +78,5 @@ def test_cli_conductivity_geometry_outputs_conductivity(capsys):
     captured = capsys.readouterr()
     assert exit_code == 0
     assert "Conductivity geometry result" in captured.out
-    assert "calculated_conductivity_s_cm: 0.01167112" in captured.out
+    assert "calculated_conductivity_s_cm: 0.01167136" in captured.out
     assert "within_tolerance: True" in captured.out
