@@ -8,6 +8,8 @@ from dataclasses import dataclass
 from typing import Iterable, Sequence
 
 KB_EV_PER_K = 8.617333262145e-5
+FARADAY_CONSTANT_C_PER_MOL = 96485.33212
+DEFAULT_MOLAR_VOLUME_ML_PER_MOL = 22414.0
 
 
 @dataclass(frozen=True)
@@ -37,6 +39,20 @@ class ComponentSumResult:
     relative_difference_pct: float
     tolerance_pct: float
     within_tolerance: bool
+
+
+@dataclass(frozen=True)
+class FaradaicEfficiencyResult:
+    current_a: float
+    electrons_per_molecule: float
+    measured_flow_ml_min: float
+    molar_volume_ml_per_mol: float
+    theoretical_flow_100pct_ml_min: float
+    calculated_fe_pct: float
+    reported_fe_pct: float | None
+    fe_difference_pct_points: float | None
+    tolerance_pct_points: float
+    within_tolerance: bool | None
 
 
 def _as_float_list(values: Iterable[float], minimum: int = 1) -> list[float]:
@@ -136,6 +152,56 @@ def check_component_sum(
         relative_difference_pct=relative_pct,
         tolerance_pct=tolerance_pct,
         within_tolerance=relative_pct <= tolerance_pct,
+    )
+
+
+def calculate_faradaic_efficiency(
+    current_a: float,
+    measured_flow_ml_min: float,
+    electrons_per_molecule: float,
+    molar_volume_ml_per_mol: float = DEFAULT_MOLAR_VOLUME_ML_PER_MOL,
+    reported_fe_pct: float | None = None,
+    tolerance_pct_points: float = 5.0,
+) -> FaradaicEfficiencyResult:
+    """Calculate Faradaic efficiency from current and measured gas flow."""
+    current_a = float(current_a)
+    measured_flow_ml_min = float(measured_flow_ml_min)
+    electrons_per_molecule = float(electrons_per_molecule)
+    molar_volume_ml_per_mol = float(molar_volume_ml_per_mol)
+    if current_a <= 0:
+        raise ValueError("current_a must be positive.")
+    if measured_flow_ml_min < 0:
+        raise ValueError("measured_flow_ml_min must be non-negative.")
+    if electrons_per_molecule <= 0:
+        raise ValueError("electrons_per_molecule must be positive.")
+    if molar_volume_ml_per_mol <= 0:
+        raise ValueError("molar_volume_ml_per_mol must be positive.")
+    if tolerance_pct_points < 0:
+        raise ValueError("tolerance_pct_points must be non-negative.")
+
+    theoretical_mol_s = current_a / (electrons_per_molecule * FARADAY_CONSTANT_C_PER_MOL)
+    theoretical_flow_ml_min = theoretical_mol_s * molar_volume_ml_per_mol * 60.0
+    calculated_fe_pct = measured_flow_ml_min / theoretical_flow_ml_min * 100.0
+
+    if reported_fe_pct is None:
+        fe_diff = None
+        within_tolerance = None
+    else:
+        reported_fe_pct = float(reported_fe_pct)
+        fe_diff = abs(calculated_fe_pct - reported_fe_pct)
+        within_tolerance = fe_diff <= tolerance_pct_points
+
+    return FaradaicEfficiencyResult(
+        current_a=current_a,
+        electrons_per_molecule=electrons_per_molecule,
+        measured_flow_ml_min=measured_flow_ml_min,
+        molar_volume_ml_per_mol=molar_volume_ml_per_mol,
+        theoretical_flow_100pct_ml_min=theoretical_flow_ml_min,
+        calculated_fe_pct=calculated_fe_pct,
+        reported_fe_pct=reported_fe_pct,
+        fe_difference_pct_points=fe_diff,
+        tolerance_pct_points=tolerance_pct_points,
+        within_tolerance=within_tolerance,
     )
 
 
