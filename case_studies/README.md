@@ -12,6 +12,7 @@ Each case study is designed to show one narrow technical issue at a time, follow
 |---|---|---|
 | `arrhenius_discrepancy/` | Activation-energy recalculation | `paper-audit arrhenius` |
 | `ivp_consistency/` | Power density consistency using `P = jV` | `paper-audit dimensional` |
+| `tolerance_report/` | Batch table/source-data comparison | `paper-audit tolerance-report` |
 | `resistance_component_sum/` | Rp/ASR component-sum consistency | `paper-audit resistance-sum` |
 | `faradaic_efficiency/` | FE and product-flow consistency | `paper-audit faradaic-efficiency` |
 | `conductivity_geometry/` | Conductivity geometry normalization | `paper-audit conductivity-geometry` |
