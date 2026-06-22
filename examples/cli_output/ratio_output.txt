@@ -1,0 +1,7 @@
+$ paper-audit ratio --new 3.53 --baseline 2.74
+
+Improvement ratio: 28.832117%
+
+$ paper-audit ratio --new 0.66 --baseline 1.25 --mode reduction
+
+Reduction ratio: 47.200000%
