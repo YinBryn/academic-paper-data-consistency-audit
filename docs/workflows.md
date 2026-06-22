@@ -58,7 +58,28 @@ The direct relation is:
 P = j × V
 ```
 
-## 4. Resistance component-sum consistency
+## 4. Batch tolerance report
+
+Use when a table contains multiple reported values that can be compared against source-data or reference values row by row.
+
+```bash
+paper-audit tolerance-report \
+  --csv case_studies/tolerance_report/input.csv \
+  --reported-column reported_Rp_ohm_cm2 \
+  --reference-column source_Rp_ohm_cm2 \
+  --id-column sample \
+  --tolerance-pct 5.0
+```
+
+Report:
+
+- total number of rows
+- number of values within tolerance
+- number of values outside tolerance
+- row-level reported/reference values
+- absolute and relative differences
+
+## 5. Resistance component-sum consistency
 
 Use when a paper reports a total Rp/ASR value and also lists component contributions, for example EIS arcs, DRT processes, or fitted equivalent-circuit elements.
 
@@ -78,7 +99,7 @@ Report:
 - relative difference in percent
 - whether the difference is within tolerance
 
-## 5. Faradaic efficiency and gas-production consistency
+## 6. Faradaic efficiency and gas-production consistency
 
 Use when a paper reports current, product-gas flow, and Faradaic efficiency.
 
@@ -106,7 +127,7 @@ Report:
 - calculated FE
 - difference from reported FE, if provided
 
-## 6. Conductivity geometry normalization
+## 7. Conductivity geometry normalization
 
 Use when a paper reports conductivity calculated from resistance, sample thickness, and area.
 
@@ -132,7 +153,7 @@ Report:
 - calculated conductivity in S/cm
 - relative difference from the reported conductivity, if provided
 
-## 7. Figure/table/source-data consistency
+## 8. Figure/table/source-data consistency
 
 Use when the same parameter appears in multiple locations.
 
@@ -144,7 +165,7 @@ Recommended table:
 | Table |  | reported value |
 | Source data |  | original data file |
 
-## 8. Evidence-claim alignment
+## 9. Evidence-claim alignment
 
 Use when a paper makes a mechanistic claim that may require additional evidence.
 
