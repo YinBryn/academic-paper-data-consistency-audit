@@ -38,6 +38,7 @@ Available subcommands:
 | `paper-audit ratio` | Calculate improvement or reduction ratios |
 | `paper-audit dimensional` | Check dimensional and `P = j × V` consistency |
 | `paper-audit resistance-sum` | Check whether total Rp/ASR equals the sum of listed components |
+| `paper-audit faradaic-efficiency` | Calculate gas-flow-based Faradaic efficiency from current |
 
 ## 5. Run tests
 
@@ -65,3 +66,16 @@ paper-audit resistance-sum \
 ```
 
 Expected interpretation: if the reported total equals the sum of listed components within tolerance, the component-sum relation is numerically consistent.
+
+## Example: Faradaic efficiency check
+
+```bash
+paper-audit faradaic-efficiency \
+  --current-density-a-cm2 0.5 \
+  --area-cm2 1.0 \
+  --measured-flow-ml-min 3.30 \
+  --electrons-per-molecule 2 \
+  --reported-fe-pct 95.0
+```
+
+Expected interpretation: the measured product-gas flow is converted into a calculated Faradaic efficiency and compared with the reported value when provided.
