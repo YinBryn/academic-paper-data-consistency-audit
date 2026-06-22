@@ -1,0 +1,10 @@
+title: Academic Paper Data Consistency Audit
+description: Physics-informed technical consistency checks for materials electrochemistry papers.
+theme: minima
+markdown: kramdown
+
+header_pages:
+  - getting_started.md
+  - workflows.md
+  - case_studies.md
+  - responsible_use.md
