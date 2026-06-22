@@ -1,6 +1,7 @@
-# Demo Input CSV
-# This CSV mimics a small data set for the performance_ratio_check script.
-# Columns: sample, temperature_C, Rp_ohm_cm2, Pmax_W_cm2, current_density_A_cm2
-sample,temperature_C,Rp_ohm_cm2,Pmax_W_cm2,current_density_A_cm2
-Baseline-Cell,600,0.850,0.320,0.533
-Modified-Cell,600,0.210,0.640,1.067
+sample,temperature_C,Rp_ohm_cm2
+Example-A,800,0.025
+Example-A,750,0.052
+Example-A,700,0.110
+Example-B,800,0.018
+Example-B,750,0.041
+Example-B,700,0.090
