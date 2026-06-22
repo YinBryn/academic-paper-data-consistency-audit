@@ -29,6 +29,16 @@ class StatisticsResult:
     population_std: float
 
 
+@dataclass(frozen=True)
+class ComponentSumResult:
+    reported_total: float
+    component_sum: float
+    absolute_difference: float
+    relative_difference_pct: float
+    tolerance_pct: float
+    within_tolerance: bool
+
+
 def _as_float_list(values: Iterable[float], minimum: int = 1) -> list[float]:
     parsed = [float(v) for v in values]
     if len(parsed) < minimum:
@@ -96,6 +106,37 @@ def relative_difference_pct(reported: float | None, calculated: float | None) ->
     if calculated == 0:
         return 0.0 if reported == 0 else math.inf
     return abs(reported - calculated) / abs(calculated) * 100.0
+
+
+def check_component_sum(
+    reported_total: float,
+    components: Iterable[float],
+    tolerance_pct: float = 1.0,
+) -> ComponentSumResult:
+    """Check whether a reported total equals the sum of listed components."""
+    component_values = _as_float_list(components, minimum=1)
+    reported_total = float(reported_total)
+    if reported_total < 0:
+        raise ValueError("reported_total must be non-negative.")
+    if any(value < 0 for value in component_values):
+        raise ValueError("component values must be non-negative.")
+    if tolerance_pct < 0:
+        raise ValueError("tolerance_pct must be non-negative.")
+
+    component_sum = sum(component_values)
+    absolute_difference = reported_total - component_sum
+    if component_sum == 0:
+        relative_pct = 0.0 if reported_total == 0 else math.inf
+    else:
+        relative_pct = abs(absolute_difference) / abs(component_sum) * 100.0
+    return ComponentSumResult(
+        reported_total=reported_total,
+        component_sum=component_sum,
+        absolute_difference=absolute_difference,
+        relative_difference_pct=relative_pct,
+        tolerance_pct=tolerance_pct,
+        within_tolerance=relative_pct <= tolerance_pct,
+    )
 
 
 def improvement_ratio(new: float, baseline: float) -> float:
