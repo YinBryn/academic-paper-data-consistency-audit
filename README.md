@@ -21,6 +21,20 @@ The goal is not to accuse authors. The goal is to make technical questions speci
 
 ---
 
+## Documentation
+
+A lightweight documentation site is available under `docs/` and can be published through GitHub Pages.
+
+Start with:
+
+- `docs/index.md` — project overview
+- `docs/getting_started.md` — installation and first commands
+- `docs/workflows.md` — audit workflows
+- `docs/case_studies.md` — synthetic examples
+- `docs/responsible_use.md` — responsible-use guidance
+
+---
+
 ## Motivation
 
 Many post-publication discussions do not start from a single obvious error. They often start from small inconsistencies between the main text, figures, tables, Supplementary Information, and source data.
