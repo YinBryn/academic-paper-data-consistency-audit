@@ -3,25 +3,48 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+and this project follows Semantic Versioning during alpha development.
 
 ---
 
-## [0.2.0-alpha] - Unreleased
+## [0.10.0-alpha] - 2026-06-22
 
 ### Added
-*   Installable Python package metadata via `pyproject.toml`.
-*   Unified `paper-audit` CLI entry point with subcommands:
+*   Installable `paper-audit` CLI package.
+*   CLI subcommands:
     *   `paper-audit arrhenius`
     *   `paper-audit statistics`
     *   `paper-audit ratio`
     *   `paper-audit dimensional`
-*   Reusable package-level check functions under `src/paper_audit/`.
-*   CLI regression tests under `tests/test_cli.py`.
+    *   `paper-audit tolerance-report`
+    *   `paper-audit resistance-sum`
+    *   `paper-audit faradaic-efficiency`
+    *   `paper-audit conductivity-geometry`
+*   Reusable package-level checks under `src/paper_audit/`.
+*   Batch reported-value/source-data tolerance report workflow.
+*   Rp/ASR component-sum consistency check.
+*   Faradaic-efficiency and gas-production consistency check.
+*   Conductivity geometry-normalization check.
+*   Synthetic case-study suite under `case_studies/`.
+*   Representative CLI output examples under `examples/cli_output/`.
+*   GitHub Pages documentation foundation under `docs/`.
+*   Community health files and contribution templates:
+    *   issue templates
+    *   pull request template
+    *   `CONTRIBUTING.md`
+    *   `CODE_OF_CONDUCT.md`
+    *   `SECURITY.md`
+*   Citation metadata via `CITATION.cff`.
+*   GitHub Actions CI for Python 3.10 and 3.11.
 
 ### Changed
-*   Updated GitHub Actions to install the package in editable mode before running tests.
-*   Updated README Quick Start and examples to show the new `paper-audit` CLI while retaining standalone script usage.
+*   README now presents the project as a reusable scientific audit toolkit.
+*   Documentation now includes getting-started, workflow, responsible-use, roadmap, and release-checklist pages.
+*   Synthetic examples are explicitly marked as synthetic and separated from real paper data.
+
+### Fixed
+*   Aligned synthetic demo report values with source CSV data.
+*   Corrected conductivity-geometry test expectations for circular-sample area normalization.
 
 ---
 
@@ -29,27 +52,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 *   Initial project scaffold for materials electrochemistry paper technical auditing.
-*   Structured methodology guidelines for 4-tier audit framework (`methodology/`):
-    *   `audit_framework.md` (General 4-tier classifications)
-    *   `data_consistency_checks.md` (Category I checks)
-    *   `reproducibility_checks.md` (Category II checks)
-    *   `physics_consistency_checks.md` (Category III checks)
-    *   `evidence_claim_alignment.md` (Category IV checks)
-*   Standard templates for report compilation (`templates/`):
-    *   `technical_audit_report_template.md` (Complete audit report layout)
-    *   `editor_technical_comment_template.md` (Neutral inquiry letter to journal editors)
-    *   `issue_log_template.md` (Tabular concern tracker)
-    *   `pubpeer_style_issue_format.md` (Single-issue neutral technical comment format)
-*   Four diagnostic Python scripts (`scripts/`):
-    *   `arrhenius_fit.py` (ASR/Rp Arrhenius slope & Ea solver)
-    *   `statistics_check.py` (Independent mean and std-dev verification)
-    *   `performance_ratio_check.py` (Batch comparison of baseline vs modified cell)
-    *   `dimensional_check.py` (Unit validation & I-V-P product check)
+*   Structured methodology guidelines for 4-tier audit framework (`methodology/`).
+*   Standard templates for report compilation (`templates/`).
+*   Initial diagnostic Python scripts under `scripts/`.
 *   Synthetic demo materials under `demo/`.
-*   Reference unit test suite with 12 passing tests (`tests/`).
-*   GitHub Actions CI workflow for test automation on push/pull_request.
-*   Citation metadata file (`CITATION.cff`) for software citation.
-*   Short public project announcement draft under `docs/project_announcement.md`.
-
-### Fixed
-*   Aligned the synthetic demo report with `demo/demo_input.csv` so the reported temperatures, Rp values, Arrhenius results, and comparison table use the same source data.
+*   Reference unit test suite.
+*   GitHub Actions CI workflow.
