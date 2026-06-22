@@ -1,0 +1,4 @@
+sample,temperature_C,Rp_ohm_cm2,reported_Ea_eV
+Synthetic-Cathode-A,800,0.022,0.85
+Synthetic-Cathode-A,750,0.053,0.85
+Synthetic-Cathode-A,700,0.103,0.85
