@@ -179,6 +179,7 @@ The `case_studies/` directory contains fully synthetic examples. They are not ba
 | `arrhenius_discrepancy/` | Activation-energy recalculation | Neutral clarification request for an Ea mismatch |
 | `ivp_consistency/` | `P = jV` consistency | Direct check of current-density, voltage, and power-density values |
 | `resistance_component_sum/` | Rp/ASR component-sum consistency | Direct check of total resistance against listed components |
+| `faradaic_efficiency/` | FE and product-flow consistency | Recalculated FE from current and measured flow |
 | `rp_table_figure_mismatch/` | Figure/table/source-data consistency | Single-issue comment for an Rp mismatch |
 | `evidence_claim_overreach/` | Evidence-claim alignment | Mechanistic claim narrowed to what the evidence supports |
 
