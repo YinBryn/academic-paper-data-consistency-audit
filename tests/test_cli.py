@@ -65,3 +65,18 @@ def test_cli_faradaic_efficiency_outputs_calculated_fe(capsys):
     assert "Faradaic efficiency result" in captured.out
     assert "calculated_fe_pct: 94.703190" in captured.out
     assert "within_tolerance: True" in captured.out
+
+
+def test_cli_conductivity_geometry_outputs_conductivity(capsys):
+    exit_code = main([
+        "conductivity-geometry",
+        "--resistance-ohm", "10.0",
+        "--thickness-mm", "0.33",
+        "--diameter-mm", "6.0",
+        "--reported-conductivity-s-cm", "0.01167",
+    ])
+    captured = capsys.readouterr()
+    assert exit_code == 0
+    assert "Conductivity geometry result" in captured.out
+    assert "calculated_conductivity_s_cm: 0.01167136" in captured.out
+    assert "within_tolerance: True" in captured.out

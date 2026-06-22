@@ -16,6 +16,7 @@ It helps check:
 - **Arrhenius fitting and statistical recalculation**
 - **Rp / ASR component-sum consistency**
 - **Faradaic efficiency and gas-production consistency**
+- **Conductivity geometry normalization**
 - **Dimensional and physical-consistency issues**
 - **Evidence-claim overextension**
 - **PubPeer-style post-publication technical comments**
@@ -45,7 +46,7 @@ Start with:
 
 Many post-publication discussions do not start from a single obvious error. They often start from small inconsistencies between the main text, figures, tables, Supplementary Information, and source data.
 
-In materials electrochemistry, these issues can become important because many conclusions depend on derived quantities such as activation energies, polarization resistances, diffusion coefficients, current-density-normalized performance metrics, gas-production rates, Faradaic efficiencies, and transport-model parameters. A small mismatch in one table can propagate into a different mechanistic interpretation.
+In materials electrochemistry, these issues can become important because many conclusions depend on derived quantities such as activation energies, polarization resistances, diffusion coefficients, current-density-normalized performance metrics, gas-production rates, Faradaic efficiencies, geometry-normalized conductivity values, and transport-model parameters. A small mismatch in one table can propagate into a different mechanistic interpretation.
 
 This repository provides a practical audit workflow for checking those links before drawing conclusions, writing a technical comment, or designing follow-up experiments.
 
@@ -57,6 +58,7 @@ This toolkit focuses on technical consistency checks for papers involving:
 
 - electrode kinetics and polarization resistance (`Rp`, `ASR`)
 - Arrhenius fitting of conductivity, resistance, or transport data
+- conductivity conversion from resistance, thickness, and area
 - resistance-component sums from EIS/DRT/deconvolution tables
 - current-voltage-power relationships in fuel cells and electrolyzers
 - gas-production and Faradaic-efficiency relationships
@@ -168,6 +170,18 @@ paper-audit faradaic-efficiency \
 
 This calculates gas-flow-based Faradaic efficiency from current and electron stoichiometry.
 
+### Example: conductivity geometry check
+
+```bash
+paper-audit conductivity-geometry \
+  --resistance-ohm 10.0 \
+  --thickness-mm 0.33 \
+  --diameter-mm 6.0 \
+  --reported-conductivity-s-cm 0.01167
+```
+
+This recalculates conductivity from resistance, sample thickness, and electrode/sample area using `sigma = L / (R × A)`.
+
 ---
 
 ## Synthetic Case Studies
@@ -180,6 +194,7 @@ The `case_studies/` directory contains fully synthetic examples. They are not ba
 | `ivp_consistency/` | `P = jV` consistency | Direct check of current-density, voltage, and power-density values |
 | `resistance_component_sum/` | Rp/ASR component-sum consistency | Direct check of total resistance against listed components |
 | `faradaic_efficiency/` | FE and product-flow consistency | Recalculated FE from current and measured flow |
+| `conductivity_geometry/` | Conductivity geometry normalization | Recalculated conductivity from resistance, thickness, and area |
 | `rp_table_figure_mismatch/` | Figure/table/source-data consistency | Single-issue comment for an Rp mismatch |
 | `evidence_claim_overreach/` | Evidence-claim alignment | Mechanistic claim narrowed to what the evidence supports |
 

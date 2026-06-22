@@ -16,3 +16,4 @@ All examples are synthetic and are not based on any real paper, author, DOI, jou
 | `dimensional_output.txt` | `paper-audit dimensional` |
 | `resistance_sum_output.txt` | `paper-audit resistance-sum` |
 | `faradaic_efficiency_output.txt` | `paper-audit faradaic-efficiency` |
+| `conductivity_geometry_output.txt` | `paper-audit conductivity-geometry` |

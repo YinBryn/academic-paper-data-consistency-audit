@@ -1,0 +1,11 @@
+$ paper-audit conductivity-geometry --resistance-ohm 10.0 --thickness-mm 0.33 --diameter-mm 6.0 --reported-conductivity-s-cm 0.01167
+
+Conductivity geometry result
+----------------------------
+resistance_ohm: 10.000000
+thickness_cm: 0.033000
+area_cm2: 0.282743
+calculated_conductivity_s_cm: 0.01167112
+reported_conductivity_s_cm: 0.01167000
+relative_difference_pct: 0.009614
+within_tolerance: True

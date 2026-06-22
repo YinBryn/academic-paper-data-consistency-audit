@@ -14,6 +14,7 @@ Each case study is designed to show one narrow technical issue at a time, follow
 | `ivp_consistency/` | Power density consistency using `P = jV` | `paper-audit dimensional` |
 | `resistance_component_sum/` | Rp/ASR component-sum consistency | `paper-audit resistance-sum` |
 | `faradaic_efficiency/` | FE and product-flow consistency | `paper-audit faradaic-efficiency` |
+| `conductivity_geometry/` | Conductivity geometry normalization | `paper-audit conductivity-geometry` |
 | `rp_table_figure_mismatch/` | Figure/table/source-data mismatch | structured manual cross-check |
 | `evidence_claim_overreach/` | Evidence-claim alignment | neutral technical reasoning template |
 
