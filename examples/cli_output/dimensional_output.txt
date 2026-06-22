@@ -1,0 +1,10 @@
+$ paper-audit dimensional --power-density 2.6 --current-density 2.0 --voltage 1.3
+
+calculated_power_density: 2.600000
+difference_pct: 0.000000
+relation_consistent: True
+
+$ paper-audit dimensional --potential-unit eV
+
+potential_unit_valid: False
+message: Potential difference should be reported in V or mV; eV is an energy unit.
