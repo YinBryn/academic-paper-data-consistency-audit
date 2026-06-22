@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.2.0-alpha] - Unreleased
+
+### Added
+*   Installable Python package metadata via `pyproject.toml`.
+*   Unified `paper-audit` CLI entry point with subcommands:
+    *   `paper-audit arrhenius`
+    *   `paper-audit statistics`
+    *   `paper-audit ratio`
+    *   `paper-audit dimensional`
+*   Reusable package-level check functions under `src/paper_audit/`.
+*   CLI regression tests under `tests/test_cli.py`.
+
+### Changed
+*   Updated GitHub Actions to install the package in editable mode before running tests.
+*   Updated README Quick Start and examples to show the new `paper-audit` CLI while retaining standalone script usage.
+
+---
+
 ## [0.1.0] - 2026-06-22
 
 ### Added
