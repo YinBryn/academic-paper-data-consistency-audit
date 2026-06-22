@@ -1,8 +1,18 @@
 # Academic Paper Data Consistency Audit
 
-This project provides a physics-informed technical audit workflow for published materials electrochemistry papers. It helps researchers check whether figures, tables, supplementary information, source data, recalculations, physical dimensions, and mechanistic claims are mutually consistent.
+> **A physics-informed toolkit for checking whether published scientific papers are internally consistent.**
 
-*Inspired by reproducibility and research-integrity workflows, but this project focuses on materials electrochemistry.*
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Status: Alpha](https://img.shields.io/badge/status-alpha-orange.svg)]()
+[![Scope: Materials Electrochemistry](https://img.shields.io/badge/scope-materials%20electrochemistry-purple.svg)]()
+
+Built for researchers who need to verify the internal consistency of published data **before** committing lab resources. This toolkit checks:
+
+- 🔍 **Figure / table / source-data mismatches** — catch transcription errors across manuscript sections
+- 🧮 **Arrhenius and statistics recalculation** — reproduce activation energies, means, and standard deviations from raw data
+- ⚡ **Dimensional and physical-consistency errors** — verify P = I × V, realistic diffusion coefficients, unit scaling
+- 📣 **Evidence–claim overextension** — flag mechanistic conclusions that outrun the resolution of the provided data
 
 ---
 
@@ -98,20 +108,43 @@ Findings are structured into four objective categories:
 *   **Category III (Physical Reasonableness)**: Violation of physical laws (e.g., power curve mismatching $I \times V$ product).
 *   **Category IV (Claim Mismatch)**: Mechanistic conclusions overshooting the provided experimental resolution.
 
+## PubPeer-Style Issue Reporting
+This repository provides standard templates (`templates/pubpeer_style_issue_format.md`) to draft post-publication technical clarifications. Comments are structured to state only objective facts, checks, and specific requested clarifications. This mimics the layout used on scientific discussion platforms like PubPeer, ensuring that the dialogue remains constructive and strictly focused on scientific content.
+
+## Evidence Levels
+To classify technical findings objectively, this framework establishes five Evidence Levels:
+*   **L1: Direct Numerical Inconsistency**: Contradictory values for the same sample under the same conditions across different figures, tables, or text.
+*   **L2: Recalculation Discrepancy**: Derived values (e.g., $E_a$, standard deviations) that cannot be mathematically reproduced from primary published data.
+*   **L3: Dimensional or Physical-Unit Issue**: Incorrect physical units or scaling errors that violate basic dimensional analysis or equations (e.g., $P \neq I \times V$).
+*   **L4: Evidence-Claim Overextension**: Qualitative assertions (e.g., stability, mechanisms) that go beyond the resolution or duration of the provided data.
+*   **L5: Hypothesis or Concern Requiring Additional Data**: Open physical or structural questions that require further experimental inputs or boundary conditions to verify.
+
+## Language Safety
+A central policy of this project is to maintain language safety (`docs/language_safety.md`):
+*   **Strictly Avoid Accusations**: Do not use words like "fraud", "misconduct", "fabrication", or "manipulation" unless they have been formally established by official institutional bodies.
+*   **Hedging Language**: Frame observations using neutral verbs like "appears to", "seems to", "difficult to reconcile", or "requires clarification".
+*   **No Intent Attribution**: Do not speculate on the authors' motives; describe only what is documented.
+
 ## Repository Structure
 ```text
 academic-paper-data-consistency-audit/
 ├── README.md                           # Project homepage and introduction
 ├── requirements.txt                    # Project dependencies
+├── checklists/
+│   └── pre_audit_checklist.md          # Checklist for metadata, data, and SI inventory
 ├── methodology/
 │   ├── audit_framework.md              # Four-tier audit category description
+│   ├── evidence_levels.md              # Categorization of findings (L1 to L5)
 │   ├── data_consistency_checks.md      # Category I check guidelines
 │   ├── reproducibility_checks.md       # Category II check guidelines
 │   ├── physics_consistency_checks.md   # Category III check guidelines
+│   ├── image_integrity_checks.md       # Visual screening guidelines (SEM, TEM, XRD)
 │   └── evidence_claim_alignment.md     # Category IV check guidelines
 ├── templates/
 │   ├── technical_audit_report_template.md  # Template for drafting full audit reports
+│   ├── pubpeer_style_issue_format.md   # Single-issue technical comment layout
 │   ├── editor_technical_comment_template.md # Neutral email/letter template for journal editors
+│   ├── author_response_tracker.md      # Table to track inquiry responses and correction statuses
 │   └── issue_log_template.md           # Tabular markdown tracker for identified concerns
 ├── examples/
 │   ├── anonymized_case_study.md        # Reference audit case study using mock data
@@ -123,6 +156,7 @@ academic-paper-data-consistency-audit/
 │   └── dimensional_check.py            # Unit validation and I-V-P physical check
 ├── docs/
 │   ├── terminology.md                  # Definition of core project terms
+│   ├── language_safety.md              # Rules for neutral and non-accusatory writing
 │   ├── writing_style_guide.md          # Linguistic instructions for maintaining neutral tone
 │   └── limitations_and_ethics.md       # Ethical boundaries and responsible disclosure rules
 ├── LICENSE                             # MIT License
