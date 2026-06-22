@@ -1,0 +1,9 @@
+$ paper-audit arrhenius --temperature-c 800 750 700 --resistance 0.022 0.053 0.103
+
+Arrhenius fitting result
+------------------------
+Fitted quantity: ln(R)
+Slope: 15.428421
+Intercept: -18.205491
+R^2: 0.997267
+Ea: 1.329493 eV
