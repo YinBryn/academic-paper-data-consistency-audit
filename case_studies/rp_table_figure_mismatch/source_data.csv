@@ -1,0 +1,4 @@
+sample,temperature_C,source_data_Rp_ohm_cm2,figure_plotted_Rp_ohm_cm2,table_listed_Rp_ohm_cm2
+Synthetic-Electrode-A,650,0.045,0.045,0.045
+Synthetic-Electrode-A,600,0.082,0.080,0.120
+Synthetic-Electrode-A,550,0.160,0.160,0.160
