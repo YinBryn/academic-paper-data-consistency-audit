@@ -6,6 +6,7 @@
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 ![Status](https://img.shields.io/badge/status-alpha-orange)
 ![Scope](https://img.shields.io/badge/scope-materials%20electrochemistry-lightgrey)
+![Run Tests](https://github.com/YinBryn/academic-paper-data-consistency-audit/actions/workflows/tests.yml/badge.svg)
 
 This project provides a structured workflow for identifying technical points that may require clarification in published or pre-submission scientific papers. It is designed especially for materials electrochemistry, solid oxide cells, protonic ceramic cells, ionic transport studies, and related fields.
 
@@ -32,6 +33,9 @@ Start with:
 - `docs/workflows.md` — audit workflows
 - `docs/case_studies.md` — synthetic examples
 - `docs/responsible_use.md` — responsible-use guidance
+- `docs/roadmap.md` — planned development directions
+- `docs/release_checklist.md` — release preparation checklist
+- `examples/cli_output/` — representative CLI output examples
 
 ---
 
@@ -104,6 +108,8 @@ paper-audit arrhenius \
   --temperature-c 800 750 700 \
   --resistance 0.022 0.053 0.103
 ```
+
+Representative output is available in `examples/cli_output/arrhenius_output.txt`.
 
 Equivalent standalone script:
 
