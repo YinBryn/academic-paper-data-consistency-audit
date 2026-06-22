@@ -1,0 +1,14 @@
+$ paper-audit tolerance-report --csv case_studies/tolerance_report/input.csv --reported-column reported_Rp_ohm_cm2 --reference-column source_Rp_ohm_cm2 --id-column sample --tolerance-pct 5.0
+
+Tolerance report
+----------------
+total_rows: 3
+pass_count: 2
+fail_count: 1
+tolerance_pct: 5.000000
+
+| row_id | reported | reference | abs_diff | rel_diff_pct | pass |
+|---|---:|---:|---:|---:|---|
+| Synthetic-A | 0.045 | 0.044 | 0.001 | 2.272727 | True |
+| Synthetic-B | 0.12 | 0.082 | 0.038 | 46.341463 | False |
+| Synthetic-C | 0.16 | 0.158 | 0.002 | 1.265823 | True |
