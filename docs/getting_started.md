@@ -37,6 +37,7 @@ Available subcommands:
 | `paper-audit statistics` | Recalculate mean and standard deviation |
 | `paper-audit ratio` | Calculate improvement or reduction ratios |
 | `paper-audit dimensional` | Check dimensional and `P = j × V` consistency |
+| `paper-audit tolerance-report` | Batch compare reported values against source/reference values |
 | `paper-audit resistance-sum` | Check whether total Rp/ASR equals the sum of listed components |
 | `paper-audit faradaic-efficiency` | Calculate gas-flow-based Faradaic efficiency from current |
 | `paper-audit conductivity-geometry` | Calculate conductivity from resistance, thickness, and area |
@@ -57,6 +58,19 @@ paper-audit dimensional \
 ```
 
 Expected interpretation: if the reported power density equals `current density × voltage` within tolerance, the relation is numerically consistent.
+
+## Example: tolerance report
+
+```bash
+paper-audit tolerance-report \
+  --csv case_studies/tolerance_report/input.csv \
+  --reported-column reported_Rp_ohm_cm2 \
+  --reference-column source_Rp_ohm_cm2 \
+  --id-column sample \
+  --tolerance-pct 5.0
+```
+
+Expected interpretation: each row is marked as within or outside the selected relative tolerance.
 
 ## Example: resistance component-sum check
 
