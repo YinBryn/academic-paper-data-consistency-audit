@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "academic-paper-data-consistency-audit"
+version = "0.2.0-alpha"
+description = "Physics-informed data consistency and reproducibility audit framework for materials electrochemistry papers."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+  { name = "YinBryn" }
+]
+keywords = [
+  "reproducibility",
+  "data-consistency",
+  "materials-science",
+  "electrochemistry",
+  "solid-oxide-cells",
+  "post-publication-review"
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Topic :: Scientific/Engineering"
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/YinBryn/academic-paper-data-consistency-audit"
+Repository = "https://github.com/YinBryn/academic-paper-data-consistency-audit"
+Issues = "https://github.com/YinBryn/academic-paper-data-consistency-audit/issues"
+
+[project.scripts]
+paper-audit = "paper_audit.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
