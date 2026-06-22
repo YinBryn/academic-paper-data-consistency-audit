@@ -15,6 +15,7 @@ It helps check:
 - **Figure / table / source-data mismatches**
 - **Arrhenius fitting and statistical recalculation**
 - **Rp / ASR component-sum consistency**
+- **Faradaic efficiency and gas-production consistency**
 - **Dimensional and physical-consistency issues**
 - **Evidence-claim overextension**
 - **PubPeer-style post-publication technical comments**
@@ -44,7 +45,7 @@ Start with:
 
 Many post-publication discussions do not start from a single obvious error. They often start from small inconsistencies between the main text, figures, tables, Supplementary Information, and source data.
 
-In materials electrochemistry, these issues can become important because many conclusions depend on derived quantities such as activation energies, polarization resistances, diffusion coefficients, current-density-normalized performance metrics, and transport-model parameters. A small mismatch in one table can propagate into a different mechanistic interpretation.
+In materials electrochemistry, these issues can become important because many conclusions depend on derived quantities such as activation energies, polarization resistances, diffusion coefficients, current-density-normalized performance metrics, gas-production rates, Faradaic efficiencies, and transport-model parameters. A small mismatch in one table can propagate into a different mechanistic interpretation.
 
 This repository provides a practical audit workflow for checking those links before drawing conclusions, writing a technical comment, or designing follow-up experiments.
 
@@ -58,6 +59,7 @@ This toolkit focuses on technical consistency checks for papers involving:
 - Arrhenius fitting of conductivity, resistance, or transport data
 - resistance-component sums from EIS/DRT/deconvolution tables
 - current-voltage-power relationships in fuel cells and electrolyzers
+- gas-production and Faradaic-efficiency relationships
 - diffusion coefficients and transport-model parameters
 - figure/table/SI/source-data consistency
 - evidence-claim alignment in mechanistic interpretation
@@ -153,6 +155,19 @@ paper-audit resistance-sum \
 
 This checks whether a reported total Rp/ASR equals the sum of listed components.
 
+### Example: Faradaic efficiency check
+
+```bash
+paper-audit faradaic-efficiency \
+  --current-density-a-cm2 0.5 \
+  --area-cm2 1.0 \
+  --measured-flow-ml-min 3.30 \
+  --electrons-per-molecule 2 \
+  --reported-fe-pct 95.0
+```
+
+This calculates gas-flow-based Faradaic efficiency from current and electron stoichiometry.
+
 ---
 
 ## Synthetic Case Studies
@@ -164,6 +179,7 @@ The `case_studies/` directory contains fully synthetic examples. They are not ba
 | `arrhenius_discrepancy/` | Activation-energy recalculation | Neutral clarification request for an Ea mismatch |
 | `ivp_consistency/` | `P = jV` consistency | Direct check of current-density, voltage, and power-density values |
 | `resistance_component_sum/` | Rp/ASR component-sum consistency | Direct check of total resistance against listed components |
+| `faradaic_efficiency/` | FE and product-flow consistency | Recalculated FE from current and measured flow |
 | `rp_table_figure_mismatch/` | Figure/table/source-data consistency | Single-issue comment for an Rp mismatch |
 | `evidence_claim_overreach/` | Evidence-claim alignment | Mechanistic claim narrowed to what the evidence supports |
 

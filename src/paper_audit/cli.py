@@ -6,7 +6,9 @@ import argparse
 import sys
 
 from .checks import (
+    DEFAULT_MOLAR_VOLUME_ML_PER_MOL,
     arrhenius_fit,
+    calculate_faradaic_efficiency,
     calculate_statistics,
     check_component_sum,
     check_current_density_power_density_relation,
@@ -66,6 +68,23 @@ def _add_resistance_sum_parser(subparsers: argparse._SubParsersAction[argparse.A
     parser.set_defaults(func=_run_resistance_sum)
 
 
+def _add_faradaic_efficiency_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
+    parser = subparsers.add_parser(
+        "faradaic-efficiency",
+        help="Calculate gas-flow-based Faradaic efficiency from current and electron stoichiometry.",
+    )
+    current_group = parser.add_mutually_exclusive_group(required=True)
+    current_group.add_argument("--current-a", type=float, help="Total current in A.")
+    current_group.add_argument("--current-density-a-cm2", type=float, help="Current density in A/cm^2; requires --area-cm2.")
+    parser.add_argument("--area-cm2", type=float, help="Active area in cm^2 when using --current-density-a-cm2.")
+    parser.add_argument("--measured-flow-ml-min", type=float, required=True, help="Measured product gas flow in mL/min.")
+    parser.add_argument("--electrons-per-molecule", type=float, required=True, help="Electrons per product molecule, e.g. 2 for H2 or 4 for O2.")
+    parser.add_argument("--reported-fe-pct", type=float, help="Optional reported Faradaic efficiency in percent.")
+    parser.add_argument("--tolerance-pct-points", type=float, default=5.0, help="Tolerance in FE percentage points.")
+    parser.add_argument("--molar-volume-ml-mol", type=float, default=DEFAULT_MOLAR_VOLUME_ML_PER_MOL, help="Gas molar volume used for mL/min conversion.")
+    parser.set_defaults(func=_run_faradaic_efficiency)
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="paper-audit",
@@ -77,6 +96,7 @@ def build_parser() -> argparse.ArgumentParser:
     _add_ratio_parser(subparsers)
     _add_dimensional_parser(subparsers)
     _add_resistance_sum_parser(subparsers)
+    _add_faradaic_efficiency_parser(subparsers)
     return parser
 
 
@@ -165,6 +185,36 @@ def _run_resistance_sum(args: argparse.Namespace) -> int:
     print(f"absolute_difference: {result.absolute_difference:.6f}")
     print(f"relative_difference_pct: {result.relative_difference_pct:.6f}")
     print(f"within_tolerance: {result.within_tolerance}")
+    return 0
+
+
+def _run_faradaic_efficiency(args: argparse.Namespace) -> int:
+    if args.current_a is not None:
+        current_a = args.current_a
+    else:
+        if args.area_cm2 is None:
+            raise SystemExit("--area-cm2 is required when using --current-density-a-cm2.")
+        current_a = args.current_density_a_cm2 * args.area_cm2
+
+    result = calculate_faradaic_efficiency(
+        current_a=current_a,
+        measured_flow_ml_min=args.measured_flow_ml_min,
+        electrons_per_molecule=args.electrons_per_molecule,
+        molar_volume_ml_per_mol=args.molar_volume_ml_mol,
+        reported_fe_pct=args.reported_fe_pct,
+        tolerance_pct_points=args.tolerance_pct_points,
+    )
+    print("Faradaic efficiency result")
+    print("--------------------------")
+    print(f"current_a: {result.current_a:.6f}")
+    print(f"electrons_per_molecule: {result.electrons_per_molecule:.6f}")
+    print(f"theoretical_flow_100pct_ml_min: {result.theoretical_flow_100pct_ml_min:.6f}")
+    print(f"measured_flow_ml_min: {result.measured_flow_ml_min:.6f}")
+    print(f"calculated_fe_pct: {result.calculated_fe_pct:.6f}")
+    if result.reported_fe_pct is not None:
+        print(f"reported_fe_pct: {result.reported_fe_pct:.6f}")
+        print(f"fe_difference_pct_points: {result.fe_difference_pct_points:.6f}")
+        print(f"within_tolerance: {result.within_tolerance}")
     return 0
 
 

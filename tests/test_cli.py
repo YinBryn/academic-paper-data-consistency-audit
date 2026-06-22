@@ -49,3 +49,19 @@ def test_cli_resistance_sum_flags_difference(capsys):
     assert "Resistance component-sum result" in captured.out
     assert "component_sum: 0.151000" in captured.out
     assert "within_tolerance: False" in captured.out
+
+
+def test_cli_faradaic_efficiency_outputs_calculated_fe(capsys):
+    exit_code = main([
+        "faradaic-efficiency",
+        "--current-density-a-cm2", "0.5",
+        "--area-cm2", "1.0",
+        "--measured-flow-ml-min", "3.30",
+        "--electrons-per-molecule", "2",
+        "--reported-fe-pct", "95.0",
+    ])
+    captured = capsys.readouterr()
+    assert exit_code == 0
+    assert "Faradaic efficiency result" in captured.out
+    assert "calculated_fe_pct: 94.703190" in captured.out
+    assert "within_tolerance: True" in captured.out
