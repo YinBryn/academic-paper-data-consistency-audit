@@ -1,0 +1,3 @@
+sample,resistance_ohm,thickness_mm,diameter_mm,reported_conductivity_S_cm
+Synthetic-Electrolyte-A,10.0,0.33,6.0,0.01167
+Synthetic-Electrolyte-B,10.0,0.33,6.0,0.02000
