@@ -17,6 +17,7 @@ Use this checklist before publishing a GitHub release.
 - [ ] `src/paper_audit/__init__.py` version is correct.
 - [ ] `CITATION.cff` version and release date are correct.
 - [ ] `CHANGELOG.md` includes the release notes.
+- [ ] `docs/releases/` includes a copy-ready release note for the target version.
 
 ## 3. Documentation
 
@@ -47,7 +48,19 @@ data-consistency
 scientific-computing
 ```
 
-## 5. Suggested release note template
+## 5. Suggested release metadata
+
+For the current consolidated alpha release:
+
+```text
+Tag: v0.10.0-alpha
+Title: v0.10.0-alpha
+Target: main
+Pre-release: yes
+Release notes: docs/releases/v0.10.0-alpha.md
+```
+
+## 6. Suggested release note template
 
 ```markdown
 ## Summary
@@ -58,6 +71,10 @@ This alpha release provides a physics-informed toolkit for technical consistency
 
 - Installable `paper-audit` CLI
 - Arrhenius, statistics, ratio, and dimensional checks
+- Batch tolerance reports
+- Rp/ASR component-sum checks
+- Faradaic-efficiency checks
+- Conductivity geometry-normalization checks
 - Synthetic case studies
 - PubPeer-style neutral reporting templates
 - Responsible-use and contribution guidance
