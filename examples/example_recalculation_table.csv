@@ -1,0 +1,7 @@
+sample,temperature_C,Rp_ohm_cm2,Pmax_W_cm2,current_density_A_cm2
+Baseline-Cell,600,0.850,0.320,0.533
+Baseline-Cell,650,0.480,0.510,0.850
+Baseline-Cell,700,0.270,0.720,1.200
+Modified-Cell,600,0.210,0.640,1.067
+Modified-Cell,650,0.110,1.020,1.700
+Modified-Cell,700,0.060,1.440,2.400
