@@ -78,7 +78,35 @@ Report:
 - relative difference in percent
 - whether the difference is within tolerance
 
-## 5. Figure/table/source-data consistency
+## 5. Faradaic efficiency and gas-production consistency
+
+Use when a paper reports current, product-gas flow, and Faradaic efficiency.
+
+```bash
+paper-audit faradaic-efficiency \
+  --current-density-a-cm2 0.5 \
+  --area-cm2 1.0 \
+  --measured-flow-ml-min 3.30 \
+  --electrons-per-molecule 2 \
+  --reported-fe-pct 95.0
+```
+
+For a product gas, the 100% FE gas-flow estimate is based on:
+
+```text
+molar flow = current / (electrons per molecule × F)
+```
+
+Report:
+
+- total current
+- electron stoichiometry
+- measured gas flow
+- theoretical gas flow at 100% FE
+- calculated FE
+- difference from reported FE, if provided
+
+## 6. Figure/table/source-data consistency
 
 Use when the same parameter appears in multiple locations.
 
@@ -90,7 +118,7 @@ Recommended table:
 | Table |  | reported value |
 | Source data |  | original data file |
 
-## 6. Evidence-claim alignment
+## 7. Evidence-claim alignment
 
 Use when a paper makes a mechanistic claim that may require additional evidence.
 
