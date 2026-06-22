@@ -1,0 +1,12 @@
+$ paper-audit faradaic-efficiency --current-density-a-cm2 0.5 --area-cm2 1.0 --measured-flow-ml-min 3.30 --electrons-per-molecule 2 --reported-fe-pct 95.0
+
+Faradaic efficiency result
+--------------------------
+current_a: 0.500000
+electrons_per_molecule: 2.000000
+theoretical_flow_100pct_ml_min: 3.484571
+measured_flow_ml_min: 3.300000
+calculated_fe_pct: 94.703190
+reported_fe_pct: 95.000000
+fe_difference_pct_points: 0.296810
+within_tolerance: True
