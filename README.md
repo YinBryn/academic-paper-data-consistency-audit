@@ -54,7 +54,7 @@ graph TD
 ### Installation
 Clone this repository and install the dependencies (Python 3.7+ is required):
 ```bash
-git clone https://github.com/PengDu2024/academic-paper-data-consistency-audit.git
+git clone https://github.com/YinBryn/academic-paper-data-consistency-audit.git
 cd academic-paper-data-consistency-audit
 pip install -r requirements.txt
 ```
