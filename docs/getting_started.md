@@ -39,6 +39,7 @@ Available subcommands:
 | `paper-audit dimensional` | Check dimensional and `P = j × V` consistency |
 | `paper-audit resistance-sum` | Check whether total Rp/ASR equals the sum of listed components |
 | `paper-audit faradaic-efficiency` | Calculate gas-flow-based Faradaic efficiency from current |
+| `paper-audit conductivity-geometry` | Calculate conductivity from resistance, thickness, and area |
 
 ## 5. Run tests
 
@@ -79,3 +80,15 @@ paper-audit faradaic-efficiency \
 ```
 
 Expected interpretation: the measured product-gas flow is converted into a calculated Faradaic efficiency and compared with the reported value when provided.
+
+## Example: conductivity geometry check
+
+```bash
+paper-audit conductivity-geometry \
+  --resistance-ohm 10.0 \
+  --thickness-mm 0.33 \
+  --diameter-mm 6.0 \
+  --reported-conductivity-s-cm 0.01167
+```
+
+Expected interpretation: conductivity is recalculated from resistance, thickness, and area, then compared with the reported value when provided.
