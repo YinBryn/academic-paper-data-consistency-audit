@@ -75,16 +75,23 @@ python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 
 pip install -r requirements.txt
+pip install -e .
 
-python scripts/arrhenius_fit.py --help
-python scripts/statistics_check.py --help
-python scripts/performance_ratio_check.py --help
-python scripts/dimensional_check.py --help
-
+paper-audit --help
 pytest
 ```
 
+You can use either the installable CLI (`paper-audit`) or the standalone scripts under `scripts/`.
+
 ### Example: Arrhenius fitting
+
+```bash
+paper-audit arrhenius \
+  --temperature-c 800 750 700 \
+  --resistance 0.022 0.053 0.103
+```
+
+Equivalent standalone script:
 
 ```bash
 python scripts/arrhenius_fit.py \
@@ -95,7 +102,7 @@ python scripts/arrhenius_fit.py \
 ### Example: statistics check
 
 ```bash
-python scripts/statistics_check.py \
+paper-audit statistics \
   --values 4.65 4.83 4.84 4.76 4.77 \
   --reported-mean 4.79 \
   --reported-std 0.04
@@ -104,13 +111,13 @@ python scripts/statistics_check.py \
 ### Example: performance ratio
 
 ```bash
-python scripts/performance_ratio_check.py --new 3.53 --baseline 2.74
+paper-audit ratio --new 3.53 --baseline 2.74
 ```
 
 ### Example: dimensional check
 
 ```bash
-python scripts/dimensional_check.py --power-density 2.6 --current-density 2.0 --voltage 1.3
+paper-audit dimensional --power-density 2.6 --current-density 2.0 --voltage 1.3
 ```
 
 ---
