@@ -20,6 +20,7 @@ from .checks import (
     reduction_ratio,
     relative_difference_pct,
 )
+from .tolerance_report import build_tolerance_report_from_csv, format_tolerance_report
 
 
 def _add_arrhenius_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
@@ -104,6 +105,19 @@ def _add_conductivity_geometry_parser(subparsers: argparse._SubParsersAction[arg
     parser.set_defaults(func=_run_conductivity_geometry)
 
 
+def _add_tolerance_report_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
+    parser = subparsers.add_parser(
+        "tolerance-report",
+        help="Batch compare reported values against source/reference values from a CSV file.",
+    )
+    parser.add_argument("--csv", required=True, help="CSV file containing reported and reference columns.")
+    parser.add_argument("--reported-column", required=True, help="Column containing reported values.")
+    parser.add_argument("--reference-column", required=True, help="Column containing source-data or reference values.")
+    parser.add_argument("--id-column", help="Optional row identifier column, e.g. sample or condition.")
+    parser.add_argument("--tolerance-pct", type=float, default=5.0, help="Relative tolerance in percent.")
+    parser.set_defaults(func=_run_tolerance_report)
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="paper-audit",
@@ -117,6 +131,7 @@ def build_parser() -> argparse.ArgumentParser:
     _add_resistance_sum_parser(subparsers)
     _add_faradaic_efficiency_parser(subparsers)
     _add_conductivity_geometry_parser(subparsers)
+    _add_tolerance_report_parser(subparsers)
     return parser
 
 
@@ -263,6 +278,18 @@ def _run_conductivity_geometry(args: argparse.Namespace) -> int:
         print(f"reported_conductivity_s_cm: {result.reported_conductivity_s_cm:.8f}")
         print(f"relative_difference_pct: {result.relative_difference_pct:.6f}")
         print(f"within_tolerance: {result.within_tolerance}")
+    return 0
+
+
+def _run_tolerance_report(args: argparse.Namespace) -> int:
+    report = build_tolerance_report_from_csv(
+        csv_path=args.csv,
+        reported_column=args.reported_column,
+        reference_column=args.reference_column,
+        id_column=args.id_column,
+        tolerance_pct=args.tolerance_pct,
+    )
+    print(format_tolerance_report(report))
     return 0
 
 

@@ -14,6 +14,7 @@ All examples are synthetic and are not based on any real paper, author, DOI, jou
 | `statistics_output.txt` | `paper-audit statistics` |
 | `ratio_output.txt` | `paper-audit ratio` |
 | `dimensional_output.txt` | `paper-audit dimensional` |
+| `tolerance_report_output.txt` | `paper-audit tolerance-report` |
 | `resistance_sum_output.txt` | `paper-audit resistance-sum` |
 | `faradaic_efficiency_output.txt` | `paper-audit faradaic-efficiency` |
 | `conductivity_geometry_output.txt` | `paper-audit conductivity-geometry` |

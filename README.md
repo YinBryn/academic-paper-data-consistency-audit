@@ -13,6 +13,7 @@ This project provides a structured workflow for identifying technical points tha
 It helps check:
 
 - **Figure / table / source-data mismatches**
+- **Batch reported-value/source-data tolerance reports**
 - **Arrhenius fitting and statistical recalculation**
 - **Rp / ASR component-sum consistency**
 - **Faradaic efficiency and gas-production consistency**
@@ -62,6 +63,7 @@ This toolkit focuses on technical consistency checks for papers involving:
 - resistance-component sums from EIS/DRT/deconvolution tables
 - current-voltage-power relationships in fuel cells and electrolyzers
 - gas-production and Faradaic-efficiency relationships
+- source-data/table tolerance reporting
 - diffusion coefficients and transport-model parameters
 - figure/table/SI/source-data consistency
 - evidence-claim alignment in mechanistic interpretation
@@ -146,6 +148,19 @@ paper-audit ratio --new 3.53 --baseline 2.74
 paper-audit dimensional --power-density 2.6 --current-density 2.0 --voltage 1.3
 ```
 
+### Example: tolerance report
+
+```bash
+paper-audit tolerance-report \
+  --csv case_studies/tolerance_report/input.csv \
+  --reported-column reported_Rp_ohm_cm2 \
+  --reference-column source_Rp_ohm_cm2 \
+  --id-column sample \
+  --tolerance-pct 5.0
+```
+
+This compares reported values against source-data/reference values across multiple rows.
+
 ### Example: resistance component-sum check
 
 ```bash
@@ -192,6 +207,7 @@ The `case_studies/` directory contains fully synthetic examples. They are not ba
 |---|---|---|
 | `arrhenius_discrepancy/` | Activation-energy recalculation | Neutral clarification request for an Ea mismatch |
 | `ivp_consistency/` | `P = jV` consistency | Direct check of current-density, voltage, and power-density values |
+| `tolerance_report/` | Batch source-data/table comparison | Row-level pass/fail tolerance report |
 | `resistance_component_sum/` | Rp/ASR component-sum consistency | Direct check of total resistance against listed components |
 | `faradaic_efficiency/` | FE and product-flow consistency | Recalculated FE from current and measured flow |
 | `conductivity_geometry/` | Conductivity geometry normalization | Recalculated conductivity from resistance, thickness, and area |

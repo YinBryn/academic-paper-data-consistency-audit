@@ -80,3 +80,25 @@ def test_cli_conductivity_geometry_outputs_conductivity(capsys):
     assert "Conductivity geometry result" in captured.out
     assert "calculated_conductivity_s_cm: 0.01167136" in captured.out
     assert "within_tolerance: True" in captured.out
+
+
+def test_cli_tolerance_report_outputs_summary(tmp_path, capsys):
+    csv_path = tmp_path / "values.csv"
+    csv_path.write_text(
+        "sample,reported,source\nA,1.02,1.00\nB,1.30,1.00\n",
+        encoding="utf-8",
+    )
+    exit_code = main([
+        "tolerance-report",
+        "--csv", str(csv_path),
+        "--reported-column", "reported",
+        "--reference-column", "source",
+        "--id-column", "sample",
+        "--tolerance-pct", "5.0",
+    ])
+    captured = capsys.readouterr()
+    assert exit_code == 0
+    assert "Tolerance report" in captured.out
+    assert "pass_count: 1" in captured.out
+    assert "fail_count: 1" in captured.out
+    assert "| B | 1.3 | 1 | 0.3 | 30.000000 | False |" in captured.out
