@@ -14,6 +14,7 @@ It helps check:
 
 - **Figure / table / source-data mismatches**
 - **Arrhenius fitting and statistical recalculation**
+- **Rp / ASR component-sum consistency**
 - **Dimensional and physical-consistency issues**
 - **Evidence-claim overextension**
 - **PubPeer-style post-publication technical comments**
@@ -55,6 +56,7 @@ This toolkit focuses on technical consistency checks for papers involving:
 
 - electrode kinetics and polarization resistance (`Rp`, `ASR`)
 - Arrhenius fitting of conductivity, resistance, or transport data
+- resistance-component sums from EIS/DRT/deconvolution tables
 - current-voltage-power relationships in fuel cells and electrolyzers
 - diffusion coefficients and transport-model parameters
 - figure/table/SI/source-data consistency
@@ -139,6 +141,17 @@ paper-audit ratio --new 3.53 --baseline 2.74
 ```bash
 paper-audit dimensional --power-density 2.6 --current-density 2.0 --voltage 1.3
 ```
+
+### Example: resistance component-sum check
+
+```bash
+paper-audit resistance-sum \
+  --reported-total 0.180 \
+  --components 0.052 0.061 0.038 \
+  --tolerance-pct 1.0
+```
+
+This checks whether a reported total Rp/ASR equals the sum of listed components.
 
 ---
 
