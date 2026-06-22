@@ -122,6 +122,21 @@ paper-audit dimensional --power-density 2.6 --current-density 2.0 --voltage 1.3
 
 ---
 
+## Synthetic Case Studies
+
+The `case_studies/` directory contains fully synthetic examples. They are not based on any real paper, author, DOI, or publisher-provided data set.
+
+| Case | Focus | Example output |
+|---|---|---|
+| `arrhenius_discrepancy/` | Activation-energy recalculation | Neutral clarification request for an Ea mismatch |
+| `ivp_consistency/` | `P = jV` consistency | Direct check of current-density, voltage, and power-density values |
+| `rp_table_figure_mismatch/` | Figure/table/source-data consistency | Single-issue comment for an Rp mismatch |
+| `evidence_claim_overreach/` | Evidence-claim alignment | Mechanistic claim narrowed to what the evidence supports |
+
+Each case includes a small input file or evidence table, a reproducible check or reasoning workflow, a technical issue summary, and a neutral comment draft.
+
+---
+
 ## Evidence Levels
 
 | Level | Meaning |
