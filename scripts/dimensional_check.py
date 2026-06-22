@@ -35,7 +35,7 @@ def check_potential_unit(unit_str):
     Standard: V or mV.
     """
     cleaned = unit_str.strip().lower()
-    if cleaned in ["v", "mv", "v (vs. ref)", "v vs. ocv", "v vs. rhe"]:
+    if cleaned in ["v", "mv", "v (vs. ref)", "v vs. ocv", "v (vs. ocv)", "v vs. rhe"]:
         return True, unit_str
     else:
         return False, "V or mV"

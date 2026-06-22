@@ -27,3 +27,7 @@ Thumbs.db
 # Project local files
 *.log
 .pytest_cache/
+.coverage
+dist/
+build/
+*.egg-info/
