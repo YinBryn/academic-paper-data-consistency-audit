@@ -55,6 +55,18 @@ class FaradaicEfficiencyResult:
     within_tolerance: bool | None
 
 
+@dataclass(frozen=True)
+class ConductivityGeometryResult:
+    resistance_ohm: float
+    thickness_cm: float
+    area_cm2: float
+    calculated_conductivity_s_cm: float
+    reported_conductivity_s_cm: float | None
+    relative_difference_pct: float | None
+    tolerance_pct: float
+    within_tolerance: bool | None
+
+
 def _as_float_list(values: Iterable[float], minimum: int = 1) -> list[float]:
     parsed = [float(v) for v in values]
     if len(parsed) < minimum:
@@ -201,6 +213,49 @@ def calculate_faradaic_efficiency(
         reported_fe_pct=reported_fe_pct,
         fe_difference_pct_points=fe_diff,
         tolerance_pct_points=tolerance_pct_points,
+        within_tolerance=within_tolerance,
+    )
+
+
+def calculate_conductivity_from_geometry(
+    resistance_ohm: float,
+    thickness_cm: float,
+    area_cm2: float,
+    reported_conductivity_s_cm: float | None = None,
+    tolerance_pct: float = 5.0,
+) -> ConductivityGeometryResult:
+    """Calculate conductivity from resistance, thickness, and electrode area."""
+    resistance_ohm = float(resistance_ohm)
+    thickness_cm = float(thickness_cm)
+    area_cm2 = float(area_cm2)
+    if resistance_ohm <= 0:
+        raise ValueError("resistance_ohm must be positive.")
+    if thickness_cm <= 0:
+        raise ValueError("thickness_cm must be positive.")
+    if area_cm2 <= 0:
+        raise ValueError("area_cm2 must be positive.")
+    if tolerance_pct < 0:
+        raise ValueError("tolerance_pct must be non-negative.")
+
+    calculated = thickness_cm / (resistance_ohm * area_cm2)
+    if reported_conductivity_s_cm is None:
+        diff = None
+        within_tolerance = None
+    else:
+        reported_conductivity_s_cm = float(reported_conductivity_s_cm)
+        if reported_conductivity_s_cm < 0:
+            raise ValueError("reported_conductivity_s_cm must be non-negative.")
+        diff = relative_difference_pct(reported_conductivity_s_cm, calculated)
+        within_tolerance = diff <= tolerance_pct
+
+    return ConductivityGeometryResult(
+        resistance_ohm=resistance_ohm,
+        thickness_cm=thickness_cm,
+        area_cm2=area_cm2,
+        calculated_conductivity_s_cm=calculated,
+        reported_conductivity_s_cm=reported_conductivity_s_cm,
+        relative_difference_pct=diff,
+        tolerance_pct=tolerance_pct,
         within_tolerance=within_tolerance,
     )
 
