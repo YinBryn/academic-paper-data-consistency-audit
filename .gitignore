@@ -1,35 +1,11 @@
-# Byte-compiled / optimized / DLL files
 __pycache__/
-*.py[cod]
-*$py.class
-
-# Environments
+*.pyc
 .env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Operating System Files
+.venv/
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-Thumbs.db
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# Project local files
-*.log
+.ipynb_checkpoints/
 .pytest_cache/
 .coverage
 dist/
 build/
 *.egg-info/
-
-# Dependency files
-requirements.txt
