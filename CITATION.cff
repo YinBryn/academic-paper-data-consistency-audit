@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this software or adapt its audit workflow, please cite it using the metadata below."
+title: "Academic Paper Data Consistency Audit"
+type: software
+authors:
+  - name: "YinBryn"
+repository-code: "https://github.com/YinBryn/academic-paper-data-consistency-audit"
+url: "https://github.com/YinBryn/academic-paper-data-consistency-audit"
+abstract: "A physics-informed toolkit for checking whether published materials electrochemistry papers are internally consistent."
+keywords:
+  - reproducibility
+  - data-consistency
+  - materials-science
+  - electrochemistry
+  - solid-oxide-cells
+  - post-publication-review
+license: MIT
+version: "0.1.0-alpha"
+date-released: "2026-06-22"
