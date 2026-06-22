@@ -14,6 +14,7 @@ It helps check:
 
 - **Figure / table / source-data mismatches**
 - **Arrhenius fitting and statistical recalculation**
+- **Rp / ASR component-sum consistency**
 - **Dimensional and physical-consistency issues**
 - **Evidence-claim overextension**
 - **PubPeer-style post-publication technical comments**
@@ -55,6 +56,7 @@ This toolkit focuses on technical consistency checks for papers involving:
 
 - electrode kinetics and polarization resistance (`Rp`, `ASR`)
 - Arrhenius fitting of conductivity, resistance, or transport data
+- resistance-component sums from EIS/DRT/deconvolution tables
 - current-voltage-power relationships in fuel cells and electrolyzers
 - diffusion coefficients and transport-model parameters
 - figure/table/SI/source-data consistency
@@ -140,6 +142,17 @@ paper-audit ratio --new 3.53 --baseline 2.74
 paper-audit dimensional --power-density 2.6 --current-density 2.0 --voltage 1.3
 ```
 
+### Example: resistance component-sum check
+
+```bash
+paper-audit resistance-sum \
+  --reported-total 0.180 \
+  --components 0.052 0.061 0.038 \
+  --tolerance-pct 1.0
+```
+
+This checks whether a reported total Rp/ASR equals the sum of listed components.
+
 ---
 
 ## Synthetic Case Studies
@@ -150,6 +163,7 @@ The `case_studies/` directory contains fully synthetic examples. They are not ba
 |---|---|---|
 | `arrhenius_discrepancy/` | Activation-energy recalculation | Neutral clarification request for an Ea mismatch |
 | `ivp_consistency/` | `P = jV` consistency | Direct check of current-density, voltage, and power-density values |
+| `resistance_component_sum/` | Rp/ASR component-sum consistency | Direct check of total resistance against listed components |
 | `rp_table_figure_mismatch/` | Figure/table/source-data consistency | Single-issue comment for an Rp mismatch |
 | `evidence_claim_overreach/` | Evidence-claim alignment | Mechanistic claim narrowed to what the evidence supports |
 

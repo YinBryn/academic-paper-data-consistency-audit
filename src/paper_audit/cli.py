@@ -8,6 +8,7 @@ import sys
 from .checks import (
     arrhenius_fit,
     calculate_statistics,
+    check_component_sum,
     check_current_density_power_density_relation,
     check_diffusion_unit,
     check_potential_unit,
@@ -54,6 +55,17 @@ def _add_dimensional_parser(subparsers: argparse._SubParsersAction[argparse.Argu
     parser.set_defaults(func=_run_dimensional)
 
 
+def _add_resistance_sum_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
+    parser = subparsers.add_parser(
+        "resistance-sum",
+        help="Check whether reported total Rp/ASR equals the sum of listed components.",
+    )
+    parser.add_argument("--reported-total", type=float, required=True, help="Reported total resistance, Rp, or ASR value.")
+    parser.add_argument("--components", nargs="+", type=float, required=True, help="Listed component resistances to sum.")
+    parser.add_argument("--tolerance-pct", type=float, default=1.0, help="Tolerance in percent relative to the component sum.")
+    parser.set_defaults(func=_run_resistance_sum)
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="paper-audit",
@@ -64,6 +76,7 @@ def build_parser() -> argparse.ArgumentParser:
     _add_statistics_parser(subparsers)
     _add_ratio_parser(subparsers)
     _add_dimensional_parser(subparsers)
+    _add_resistance_sum_parser(subparsers)
     return parser
 
 
@@ -140,6 +153,18 @@ def _run_dimensional(args: argparse.Namespace) -> int:
         print(f"calculated_power_density: {calculated:.6f}")
         print(f"difference_pct: {diff:.6f}")
         print(f"relation_consistent: {ok}")
+    return 0
+
+
+def _run_resistance_sum(args: argparse.Namespace) -> int:
+    result = check_component_sum(args.reported_total, args.components, args.tolerance_pct)
+    print("Resistance component-sum result")
+    print("-------------------------------")
+    print(f"reported_total: {result.reported_total:.6f}")
+    print(f"component_sum: {result.component_sum:.6f}")
+    print(f"absolute_difference: {result.absolute_difference:.6f}")
+    print(f"relative_difference_pct: {result.relative_difference_pct:.6f}")
+    print(f"within_tolerance: {result.within_tolerance}")
     return 0
 
 

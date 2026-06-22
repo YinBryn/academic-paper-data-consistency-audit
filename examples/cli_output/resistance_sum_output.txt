@@ -1,0 +1,9 @@
+$ paper-audit resistance-sum --reported-total 0.180 --components 0.052 0.061 0.038 --tolerance-pct 1.0
+
+Resistance component-sum result
+-------------------------------
+reported_total: 0.180000
+component_sum: 0.151000
+absolute_difference: 0.029000
+relative_difference_pct: 19.205298
+within_tolerance: False

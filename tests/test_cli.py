@@ -35,3 +35,17 @@ def test_cli_dimensional_checks_power_relation(capsys):
     assert exit_code == 0
     assert "calculated_power_density: 2.600000" in captured.out
     assert "relation_consistent: True" in captured.out
+
+
+def test_cli_resistance_sum_flags_difference(capsys):
+    exit_code = main([
+        "resistance-sum",
+        "--reported-total", "0.180",
+        "--components", "0.052", "0.061", "0.038",
+        "--tolerance-pct", "1.0",
+    ])
+    captured = capsys.readouterr()
+    assert exit_code == 0
+    assert "Resistance component-sum result" in captured.out
+    assert "component_sum: 0.151000" in captured.out
+    assert "within_tolerance: False" in captured.out

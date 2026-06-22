@@ -14,3 +14,4 @@ All examples are synthetic and are not based on any real paper, author, DOI, jou
 | `statistics_output.txt` | `paper-audit statistics` |
 | `ratio_output.txt` | `paper-audit ratio` |
 | `dimensional_output.txt` | `paper-audit dimensional` |
+| `resistance_sum_output.txt` | `paper-audit resistance-sum` |
