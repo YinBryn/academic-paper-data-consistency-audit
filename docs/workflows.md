@@ -106,7 +106,33 @@ Report:
 - calculated FE
 - difference from reported FE, if provided
 
-## 6. Figure/table/source-data consistency
+## 6. Conductivity geometry normalization
+
+Use when a paper reports conductivity calculated from resistance, sample thickness, and area.
+
+```bash
+paper-audit conductivity-geometry \
+  --resistance-ohm 10.0 \
+  --thickness-mm 0.33 \
+  --diameter-mm 6.0 \
+  --reported-conductivity-s-cm 0.01167
+```
+
+The check uses:
+
+```text
+sigma = L / (R × A)
+```
+
+Report:
+
+- resistance in ohm
+- thickness in cm
+- area in cm²
+- calculated conductivity in S/cm
+- relative difference from the reported conductivity, if provided
+
+## 7. Figure/table/source-data consistency
 
 Use when the same parameter appears in multiple locations.
 
@@ -118,7 +144,7 @@ Recommended table:
 | Table |  | reported value |
 | Source data |  | original data file |
 
-## 7. Evidence-claim alignment
+## 8. Evidence-claim alignment
 
 Use when a paper makes a mechanistic claim that may require additional evidence.
 
