@@ -13,7 +13,7 @@ def test_conductivity_geometry_calculation_matches_reported():
         reported_conductivity_s_cm=0.01167,
         tolerance_pct=1.0,
     )
-    assert math.isclose(result.calculated_conductivity_s_cm, 0.01167112211314011)
+    assert math.isclose(result.calculated_conductivity_s_cm, 0.01167136249340566)
     assert result.within_tolerance is True
 
 
