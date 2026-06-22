@@ -1,133 +1,95 @@
 #!/usr/bin/env python3
-"""
-Statistics Verification Script.
-Computes mean, sample standard deviation, and population standard deviation of datasets.
-Includes a comparison function to verify reported values within a certain tolerance.
-No external dependencies.
-"""
+"""Statistics consistency helper for replicate source data."""
 
-import math
-import sys
-
-def calculate_mean(values):
-    """Calculate the arithmetic mean of a list of numbers."""
-    if not values:
-        raise ValueError("Dataset is empty.")
-    return sum(values) / len(values)
-
-def calculate_sample_std(values, mean=None):
-    """
-    Calculate the sample standard deviation (denominator n-1).
-    Used for general experimental replicate samples.
-    """
-    n = len(values)
-    if n < 2:
-        raise ValueError("Sample standard deviation requires at least 2 data points.")
-    if mean is None:
-        mean = calculate_mean(values)
-    variance = sum((x - mean) ** 2 for x in values) / (n - 1)
-    return math.sqrt(variance)
-
-def calculate_population_std(values, mean=None):
-    """
-    Calculate the population standard deviation (denominator n).
-    Used when the dataset represents the entire population.
-    """
-    n = len(values)
-    if n < 1:
-        raise ValueError("Population standard deviation requires at least 1 data point.")
-    if mean is None:
-        mean = calculate_mean(values)
-    variance = sum((x - mean) ** 2 for x in values) / n
-    return math.sqrt(variance)
-
-def compare_reported_value(reported_val, calculated_val, tolerance_pct=1.0):
-    """
-    Compares a reported value in a paper with an independently calculated value.
-    Returns (is_consistent, relative_difference_pct).
-    """
-    if calculated_val == 0:
-        if reported_val == 0:
-            return True, 0.0
-        else:
-            return False, float('inf')
-            
-    diff = abs(reported_val - calculated_val)
-    diff_pct = (diff / abs(calculated_val)) * 100.0
-    is_consistent = diff_pct <= tolerance_pct
-    return is_consistent, diff_pct
+from __future__ import annotations
 
 import argparse
+import math
+from dataclasses import dataclass
+from typing import Iterable
 
-def run_test():
-    # Simple self-test to verify correctness
-    test_data = [0.24, 0.26, 0.25, 0.27, 0.23]
-    print("--- Running Statistics Check Self-Test ---")
-    print(f"Test Dataset: {test_data}")
-    
-    mean = calculate_mean(test_data)
-    sample_std = calculate_sample_std(test_data, mean)
-    pop_std = calculate_population_std(test_data, mean)
-    
-    print(f"Calculated Mean: {mean:.4f}")
-    print(f"Calculated Sample Std Dev (n-1): {sample_std:.5f}")
-    print(f"Calculated Population Std Dev (n): {pop_std:.5f}")
-    
-    # Comparison examples
-    reported_mean_1 = 0.25
-    reported_mean_2 = 0.28
-    
-    ok1, err1 = compare_reported_value(reported_mean_1, mean)
-    ok2, err2 = compare_reported_value(reported_mean_2, mean)
-    
-    print(f"Reported Mean {reported_mean_1} vs Calculated {mean:.4f}: Consistent? {ok1} (Diff: {err1:.2f}%)")
-    print(f"Reported Mean {reported_mean_2} vs Calculated {mean:.4f}: Consistent? {ok2} (Diff: {err2:.2f}%)")
 
-def main():
-    parser = argparse.ArgumentParser(description="Verify statistical mean and standard deviation.")
-    parser.add_argument("-d", "--data", type=str,
-                        help="Comma-separated list of numbers (e.g., 0.24,0.26,0.25)")
-    parser.add_argument("-r", "--reported", type=float,
-                        help="Optional reported mean value to check against")
-    parser.add_argument("-t", "--tolerance", type=float, default=1.0,
-                        help="Tolerance percentage for comparison (default: 1.0%%)")
-    parser.add_argument("--test", action="store_true",
-                        help="Run built-in self-test")
-    
-    args = parser.parse_args()
-    
-    if args.test:
-        run_test()
-        return
-        
-    if not args.data:
-        parser.print_help()
-        print("\nExample:")
-        print("  python3 statistics_check.py -d 0.24,0.26,0.25,0.27,0.23 -r 0.25")
-        return
-        
-    try:
-        values = [float(val.strip()) for val in args.data.split(",")]
-    except ValueError:
-        print("Error: Data must be a comma-separated list of numbers.")
-        return
-        
-    mean = calculate_mean(values)
-    print(f"Dataset size: {len(values)}")
-    print(f"Calculated Mean: {mean:.5f}")
-    
-    try:
-        sample_std = calculate_sample_std(values, mean)
-        print(f"Calculated Sample Std Dev (n-1): {sample_std:.5f}")
-    except ValueError as e:
-        print(f"Sample Std Dev: {e}")
-        
-    pop_std = calculate_population_std(values, mean)
-    print(f"Calculated Population Std Dev (n): {pop_std:.5f}")
-    
-    if args.reported is not None:
-        ok, err = compare_reported_value(args.reported, mean, args.tolerance)
-        print(f"Comparison: Reported={args.reported} vs Calculated={mean:.5f} | Consistent? {ok} (Diff: {err:.2f}%)")
+@dataclass(frozen=True)
+class StatisticsResult:
+    n: int
+    mean: float
+    sample_std: float | None
+    population_std: float
+
+
+def _values(values: Iterable[float]) -> list[float]:
+    parsed = [float(v) for v in values]
+    if not parsed:
+        raise ValueError("At least one value is required.")
+    return parsed
+
+
+def calculate_statistics(values: Iterable[float]) -> StatisticsResult:
+    """Return mean, sample standard deviation, and population standard deviation."""
+    data = _values(values)
+    n = len(data)
+    mean = sum(data) / n
+    population_std = math.sqrt(sum((x - mean) ** 2 for x in data) / n)
+    sample_std = math.sqrt(sum((x - mean) ** 2 for x in data) / (n - 1)) if n > 1 else None
+    return StatisticsResult(n=n, mean=mean, sample_std=sample_std, population_std=population_std)
+
+
+def compare_reported_value(
+    reported_mean: float,
+    reported_std: float | None,
+    values: Iterable[float],
+    tolerance_pct: float = 1.0,
+    use_sample_std: bool = True,
+) -> dict[str, float | bool | None]:
+    """Compare reported mean/std with recalculated statistics."""
+    stats = calculate_statistics(values)
+    target_std = stats.sample_std if use_sample_std else stats.population_std
+
+    def rel_diff(reported: float | None, calculated: float | None) -> float | None:
+        if reported is None or calculated is None:
+            return None
+        if calculated == 0:
+            return 0.0 if reported == 0 else math.inf
+        return abs(reported - calculated) / abs(calculated) * 100.0
+
+    mean_diff = rel_diff(reported_mean, stats.mean)
+    std_diff = rel_diff(reported_std, target_std)
+    return {
+        "n": stats.n,
+        "calculated_mean": stats.mean,
+        "calculated_std": target_std,
+        "mean_relative_difference_pct": mean_diff,
+        "std_relative_difference_pct": std_diff,
+        "mean_within_tolerance": mean_diff is not None and mean_diff <= tolerance_pct,
+        "std_within_tolerance": None if std_diff is None else std_diff <= tolerance_pct,
+    }
+
+
+def _build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="Recalculate mean/std from replicate values and compare reported values.")
+    parser.add_argument("--values", nargs="+", type=float, required=True, help="Replicate values.")
+    parser.add_argument("--reported-mean", type=float, help="Reported mean value.")
+    parser.add_argument("--reported-std", type=float, help="Reported standard deviation.")
+    parser.add_argument("--population-std", action="store_true", help="Compare against population std instead of sample std.")
+    parser.add_argument("--tolerance-pct", type=float, default=1.0, help="Tolerance in percent.")
+    return parser
+
+
+def main() -> None:
+    args = _build_parser().parse_args()
+    result = calculate_statistics(args.values)
+    print("Statistics check")
+    print("----------------")
+    print(f"n: {result.n}")
+    print(f"mean: {result.mean:.6f}")
+    print(f"sample_std: {result.sample_std if result.sample_std is not None else 'NA'}")
+    print(f"population_std: {result.population_std:.6f}")
+    if args.reported_mean is not None:
+        comparison = compare_reported_value(args.reported_mean, args.reported_std, args.values, args.tolerance_pct, not args.population_std)
+        print("Comparison:")
+        for key, value in comparison.items():
+            print(f"{key}: {value}")
+
 
 if __name__ == "__main__":
     main()
