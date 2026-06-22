@@ -6,51 +6,103 @@ This project provides a physics-informed technical audit workflow for published 
 
 ---
 
-## 1. Project Title
-**Academic Paper Data Consistency Audit**: A technical audit framework for published articles in materials science, solid-state electrochemistry, solid oxide cells (SOFC/SOEC), and protonic ceramic cells (PCC).
+## Motivation
 
-## 2. Short Description
-This repository contains a structured methodology, templates, and reference Python scripts designed to perform post-publication technical checks on published research papers. It focuses on identifying core data inconsistencies, verifying calculation reproducibility, evaluating physical and thermodynamic plausibility, and assessing the alignment between qualitative claims and empirical evidence.
+In materials electrochemistry, researchers frequently build on published data to select candidate materials, construct transport models, or design device configurations (such as for fuel cells or electrolyzers). However, minor transcription errors, unit mismatches, or mathematical discrepancies in published papers can lead to wasted months of lab work when trying to reproduce results.
 
-## 3. Scope
+This project exists to provide a structured, non-confrontational technical check workflow. By focusing on data self-consistency and basic physical boundaries (such as conservation of charge and mass), we aim to help researchers verify published figures, tables, and claims before committing valuable resources to secondary studies. It also serves as a guide for authors to pre-audit their own drafts before submission, enhancing the overall reliability of the scientific record.
+
+## Project Scope
+
 The scope of this project is strictly limited to checking the internal self-consistency of data presented in published research (or drafts under peer review). It is designed to evaluate solid-state electrochemistry papers, particularly those describing:
 *   Electrode kinetics and polarization resistance ($R_p$, $ASR$).
 *   Temperature-dependent electrical conductivity ($\sigma$) and Arrhenius fittings.
 *   Current-voltage-power ($I\text{--}V\text{--}P$) polarization relationships in fuel cells/electrolyzers.
 *   Solid-state ionic diffusion coefficients ($D_{app}$) and electrical properties.
 
-## 4. What this Project Checks
+## What this Project Checks
 *   **Data Consistency**: Discrepancies between figure points, tables, text assertions, and Supplementary Information (SI) data tables.
 *   **Calculational Reproducibility**: Mathematical verification of activation energies ($E_a$), sample standard deviations, and reported performance improvement percentages.
 *   **Physics-Informed Boundaries**: Conformance of data to physical constraints such as current-voltage-power relations ($P = I \times V$), charge/mass conservation, and realistic ranges for diffusion coefficients.
 *   **Claim-Evidence Alignment**: Evaluation of whether qualitative conclusions or proposed electrochemical mechanisms are supported by direct evidence rather than indirect fitting or simulations alone.
 
-## 5. What this Project Does Not Claim
+## What this Project Does Not Claim
 *   **No Determination of Misconduct**: This project evaluates data consistency and reproducibility. It does not judge the authors' intent or label discrepancies as academic fraud or misconduct.
 *   **No Physical Re-experimentation**: The audit is entirely based on the published manuscript and supplementary datasets; it does not involve reproducing the physical synthesis or experimental testing of the materials.
 *   **No Peer Review Replacement**: This is a specialized technical check, not a general evaluation of a paper's novelty, scientific significance, or impact.
 
-## 6. Workflow
+## Workflow
+
 The technical audit follows a five-step diagnostic pipeline:
+
 ```mermaid
 graph TD
-    A["1. Data Extraction<br>(Text, Tables, Figures, SI)"] --> B["2. Cross-Referencing<br>(Check matching values)")
-    B --> C["3. Recalculation<br>(Arrhenius, Stats, Ratios)")
-    C --> D["4. Physics Check<br>(P=IV, Diffusion limits)")
-    D --> E["5. Reporting<br>(Compile Neutral Memo/Comment)"]
+    A[1. Data Extraction<br>Text, Tables, Figures, SI]
+    B[2. Cross-Referencing<br>Check matching values]
+    C[3. Recalculation<br>Arrhenius, Stats, Ratios]
+    D[4. Physics Check<br>P=IV, Diffusion limits]
+    E[5. Reporting<br>Compile Neutral Memo/Comment]
+
+    A --> B
+    B --> C
+    C --> D
+    D --> E
 ```
 
-## 7. Example Audit Categories
+## Quick Start
+
+### Installation
+Clone this repository and install the dependencies (Python 3.7+ is required):
+```bash
+git clone https://github.com/PengDu2024/academic-paper-data-consistency-audit.git
+cd academic-paper-data-consistency-audit
+pip install -r requirements.txt
+```
+
+### Running Validation Tests
+To run the automated tests verifying the fitting and statistics scripts:
+```bash
+pytest tests/
+```
+
+### Running Example Diagnostics
+
+1. **Arrhenius Activation Energy fitting**:
+   Verify activation energy calculations from Celsius temperatures and polarization resistance ($R_p$) values:
+   ```bash
+   python3 scripts/arrhenius_fit.py -t 500,550,600 -r 1.25,0.52,0.22 --mode kinetic
+   ```
+
+2. **Statistical Data Consistency Check**:
+   Independently calculate mean and standard deviation from a comma-separated list of raw numbers, and compare it with the reported value:
+   ```bash
+   python3 scripts/statistics_check.py -d 0.24,0.26,0.25,0.27,0.23 -r 0.25
+   ```
+
+3. **Current-Voltage-Power (I-V-P) Consistency Check**:
+   Verify if the reported power density ($P$) is consistent with the product of current density ($I$) and voltage ($V$):
+   ```bash
+   python3 scripts/dimensional_check.py --ivp 1.5,0.63,0.95 --tolerance 1.0
+   ```
+
+4. **Batch Performance Ratio Comparison from CSV**:
+   Batch process experimental results from a CSV file comparing the modified cathode performance with the baseline cathode:
+   ```bash
+   python3 scripts/performance_ratio_check.py --csv examples/example_recalculation_table.csv --new Modified-Cell --base Baseline-Cell --column Rp_ohm_cm2
+   ```
+
+## Example Audit Categories
 Findings are structured into four objective categories:
 *   **Category I (Core Inconsistencies)**: Numerical mismatch between text, tables, and plots.
 *   **Category II (Calculation Reproducibility)**: Discrepancies in calculated slope-derived parameters (e.g., $E_a$) or stats.
 *   **Category III (Physical Reasonableness)**: Violation of physical laws (e.g., power curve mismatching $I \times V$ product).
 *   **Category IV (Claim Mismatch)**: Mechanistic conclusions overshooting the provided experimental resolution.
 
-## 8. Repository Structure
+## Repository Structure
 ```text
 academic-paper-data-consistency-audit/
 ├── README.md                           # Project homepage and introduction
+├── requirements.txt                    # Project dependencies
 ├── methodology/
 │   ├── audit_framework.md              # Four-tier audit category description
 │   ├── data_consistency_checks.md      # Category I check guidelines
@@ -77,12 +129,12 @@ academic-paper-data-consistency-audit/
 └── .gitignore                          # Standard python git exclusions
 ```
 
-## 9. Ethical and Legal Note
+## Ethical and Legal Note
 Users of this framework are expected to maintain the highest standards of scientific professionalism. 
 *   Always use neutral, objective, and non-accusatory language.
 *   Avoid public accusations; contact authors first to resolve questions.
 *   Do not redistribute copyrighted or paywalled source PDFs alongside reports.
 *   Focus purely on data facts and physical laws, avoiding assumptions regarding author intent.
 
-## 10. License
+## License
 This project is licensed under the terms of the [MIT License](LICENSE).

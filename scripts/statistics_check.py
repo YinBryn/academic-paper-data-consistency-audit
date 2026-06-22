@@ -57,6 +57,8 @@ def compare_reported_value(reported_val, calculated_val, tolerance_pct=1.0):
     is_consistent = diff_pct <= tolerance_pct
     return is_consistent, diff_pct
 
+import argparse
+
 def run_test():
     # Simple self-test to verify correctness
     test_data = [0.24, 0.26, 0.25, 0.27, 0.23]
@@ -81,10 +83,51 @@ def run_test():
     print(f"Reported Mean {reported_mean_1} vs Calculated {mean:.4f}: Consistent? {ok1} (Diff: {err1:.2f}%)")
     print(f"Reported Mean {reported_mean_2} vs Calculated {mean:.4f}: Consistent? {ok2} (Diff: {err2:.2f}%)")
 
-if __name__ == "__main__":
-    if len(sys.argv) > 1 and sys.argv[1] == "--test":
+def main():
+    parser = argparse.ArgumentParser(description="Verify statistical mean and standard deviation.")
+    parser.add_argument("-d", "--data", type=str,
+                        help="Comma-separated list of numbers (e.g., 0.24,0.26,0.25)")
+    parser.add_argument("-r", "--reported", type=float,
+                        help="Optional reported mean value to check against")
+    parser.add_argument("-t", "--tolerance", type=float, default=1.0,
+                        help="Tolerance percentage for comparison (default: 1.0%%)")
+    parser.add_argument("--test", action="store_true",
+                        help="Run built-in self-test")
+    
+    args = parser.parse_args()
+    
+    if args.test:
         run_test()
-    else:
-        # Prompt user on usage
-        print("Usage: python3 statistics_check.py --test")
-        print("Or import this script as a module to use calculate_mean, calculate_sample_std, etc.")
+        return
+        
+    if not args.data:
+        parser.print_help()
+        print("\nExample:")
+        print("  python3 statistics_check.py -d 0.24,0.26,0.25,0.27,0.23 -r 0.25")
+        return
+        
+    try:
+        values = [float(val.strip()) for val in args.data.split(",")]
+    except ValueError:
+        print("Error: Data must be a comma-separated list of numbers.")
+        return
+        
+    mean = calculate_mean(values)
+    print(f"Dataset size: {len(values)}")
+    print(f"Calculated Mean: {mean:.5f}")
+    
+    try:
+        sample_std = calculate_sample_std(values, mean)
+        print(f"Calculated Sample Std Dev (n-1): {sample_std:.5f}")
+    except ValueError as e:
+        print(f"Sample Std Dev: {e}")
+        
+    pop_std = calculate_population_std(values, mean)
+    print(f"Calculated Population Std Dev (n): {pop_std:.5f}")
+    
+    if args.reported is not None:
+        ok, err = compare_reported_value(args.reported, mean, args.tolerance)
+        print(f"Comparison: Reported={args.reported} vs Calculated={mean:.5f} | Consistent? {ok} (Diff: {err:.2f}%)")
+
+if __name__ == "__main__":
+    main()

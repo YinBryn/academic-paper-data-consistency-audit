@@ -61,6 +61,8 @@ def check_current_density_power_density_relation(current_density, cell_voltage, 
     is_consistent = diff_pct <= tolerance_pct
     return is_consistent, calc_power, diff_pct
 
+import argparse
+
 def run_checks():
     print("--- Running Dimensional & Relation Checks ---")
     
@@ -87,9 +89,54 @@ def run_checks():
     print(f"Relation check for I={I_val}, V={V_val}, P_reported={P_mismatched}:")
     print(f"  Calculated P = {calc2:.4f} | Consistent? {ok2} (Diff: {err2:.2f}%)")
 
-if __name__ == "__main__":
-    if len(sys.argv) > 1 and sys.argv[1] == "--run":
+def main():
+    parser = argparse.ArgumentParser(description="Check physical units and current-voltage-power consistency.")
+    parser.add_argument("--run", action="store_true",
+                        help="Run built-in self-test checks")
+    parser.add_argument("--diffusion", type=str,
+                        help="Check a specific diffusion unit string (e.g. 'cm^2/s')")
+    parser.add_argument("--potential", type=str,
+                        help="Check a specific potential unit string (e.g. 'mV')")
+    parser.add_argument("--ivp", type=str,
+                        help="Perform I-V-P check. Format: current,voltage,power (e.g. 1.25,0.65,0.8125)")
+    parser.add_argument("-t", "--tolerance", type=float, default=1.0,
+                        help="Tolerance percentage for I-V-P check (default: 1.0%%)")
+                        
+    args = parser.parse_args()
+    
+    if args.run:
         run_checks()
-    else:
-        print("Usage: python3 dimensional_check.py --run")
-        print("Or import this script as a module to use check_diffusion_unit, etc.")
+        return
+        
+    if not (args.diffusion or args.potential or args.ivp):
+        parser.print_help()
+        print("\nExamples:")
+        print("  python3 dimensional_check.py --diffusion 'cm/s'")
+        print("  python3 dimensional_check.py --ivp 1.5,0.63,0.95")
+        return
+        
+    if args.diffusion:
+        ok, sug = check_diffusion_unit(args.diffusion)
+        print(f"Diffusion Unit '{args.diffusion}': Valid? {ok} | Suggestion/Correct form: {sug}")
+        
+    if args.potential:
+        ok, sug = check_potential_unit(args.potential)
+        print(f"Potential Unit '{args.potential}': Valid? {ok} | Suggestion/Correct form: {sug}")
+        
+    if args.ivp:
+        try:
+            parts = [float(val.strip()) for val in args.ivp.split(",")]
+            if len(parts) != 3:
+                raise ValueError("Must contain exactly 3 comma-separated numbers.")
+        except ValueError as e:
+            print(f"Error parsing --ivp: {e}")
+            return
+            
+        cur, volt, pwr = parts
+        ok, calc, err = check_current_density_power_density_relation(cur, volt, pwr, args.tolerance)
+        print(f"I-V-P Consistency: Current={cur} A/cm2, Voltage={volt} V, Reported Power={pwr} W/cm2")
+        print(f"  Calculated Power = {calc:.5f} W/cm2")
+        print(f"  Consistent? {ok} (Difference: {err:.2f}%)")
+
+if __name__ == "__main__":
+    main()
