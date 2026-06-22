@@ -26,6 +26,12 @@ paper-audit arrhenius \
 - [Audit workflows](workflows.md)
 - [Synthetic case studies](case_studies.md)
 - [Responsible use](responsible_use.md)
+- [Roadmap](roadmap.md)
+- [Release checklist](release_checklist.md)
+
+## Additional examples
+
+Representative command outputs are available in `../examples/cli_output/`.
 
 ## Repository
 
