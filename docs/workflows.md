@@ -58,7 +58,27 @@ The direct relation is:
 P = j × V
 ```
 
-## 4. Figure/table/source-data consistency
+## 4. Resistance component-sum consistency
+
+Use when a paper reports a total Rp/ASR value and also lists component contributions, for example EIS arcs, DRT processes, or fitted equivalent-circuit elements.
+
+```bash
+paper-audit resistance-sum \
+  --reported-total 0.180 \
+  --components 0.052 0.061 0.038 \
+  --tolerance-pct 1.0
+```
+
+Report:
+
+- reported total Rp/ASR
+- listed component values
+- sum of components
+- absolute difference
+- relative difference in percent
+- whether the difference is within tolerance
+
+## 5. Figure/table/source-data consistency
 
 Use when the same parameter appears in multiple locations.
 
@@ -70,7 +90,7 @@ Recommended table:
 | Table |  | reported value |
 | Source data |  | original data file |
 
-## 5. Evidence-claim alignment
+## 6. Evidence-claim alignment
 
 Use when a paper makes a mechanistic claim that may require additional evidence.
 
