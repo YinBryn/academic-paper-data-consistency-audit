@@ -1,0 +1,12 @@
+$ paper-audit statistics --values 4.65 4.83 4.84 4.76 4.77 --reported-mean 4.79 --reported-std 0.04
+
+Statistics recalculation result
+-------------------------------
+n: 5
+mean: 4.770000
+sample_std: 0.075829
+population_std: 0.067823
+reported_mean_difference_pct: 0.419287
+reported_mean_within_tolerance: True
+reported_std_difference_pct: 47.513140
+reported_std_within_tolerance: False
