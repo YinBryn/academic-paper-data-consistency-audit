@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import argparse
+import math
 import sys
 
 from .checks import (
     DEFAULT_MOLAR_VOLUME_ML_PER_MOL,
     arrhenius_fit,
+    calculate_conductivity_from_geometry,
     calculate_faradaic_efficiency,
     calculate_statistics,
     check_component_sum,
@@ -85,6 +87,23 @@ def _add_faradaic_efficiency_parser(subparsers: argparse._SubParsersAction[argpa
     parser.set_defaults(func=_run_faradaic_efficiency)
 
 
+def _add_conductivity_geometry_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
+    parser = subparsers.add_parser(
+        "conductivity-geometry",
+        help="Calculate conductivity from resistance, thickness, and electrode area.",
+    )
+    parser.add_argument("--resistance-ohm", type=float, required=True, help="Measured resistance in ohm.")
+    thickness_group = parser.add_mutually_exclusive_group(required=True)
+    thickness_group.add_argument("--thickness-cm", type=float, help="Sample thickness in cm.")
+    thickness_group.add_argument("--thickness-mm", type=float, help="Sample thickness in mm.")
+    area_group = parser.add_mutually_exclusive_group(required=True)
+    area_group.add_argument("--area-cm2", type=float, help="Electrode/sample area in cm^2.")
+    area_group.add_argument("--diameter-mm", type=float, help="Circular electrode/sample diameter in mm.")
+    parser.add_argument("--reported-conductivity-s-cm", type=float, help="Optional reported conductivity in S/cm.")
+    parser.add_argument("--tolerance-pct", type=float, default=5.0, help="Tolerance in percent.")
+    parser.set_defaults(func=_run_conductivity_geometry)
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="paper-audit",
@@ -97,6 +116,7 @@ def build_parser() -> argparse.ArgumentParser:
     _add_dimensional_parser(subparsers)
     _add_resistance_sum_parser(subparsers)
     _add_faradaic_efficiency_parser(subparsers)
+    _add_conductivity_geometry_parser(subparsers)
     return parser
 
 
@@ -214,6 +234,34 @@ def _run_faradaic_efficiency(args: argparse.Namespace) -> int:
     if result.reported_fe_pct is not None:
         print(f"reported_fe_pct: {result.reported_fe_pct:.6f}")
         print(f"fe_difference_pct_points: {result.fe_difference_pct_points:.6f}")
+        print(f"within_tolerance: {result.within_tolerance}")
+    return 0
+
+
+def _run_conductivity_geometry(args: argparse.Namespace) -> int:
+    thickness_cm = args.thickness_cm if args.thickness_cm is not None else args.thickness_mm / 10.0
+    if args.area_cm2 is not None:
+        area_cm2 = args.area_cm2
+    else:
+        diameter_cm = args.diameter_mm / 10.0
+        area_cm2 = math.pi * (diameter_cm / 2.0) ** 2
+
+    result = calculate_conductivity_from_geometry(
+        resistance_ohm=args.resistance_ohm,
+        thickness_cm=thickness_cm,
+        area_cm2=area_cm2,
+        reported_conductivity_s_cm=args.reported_conductivity_s_cm,
+        tolerance_pct=args.tolerance_pct,
+    )
+    print("Conductivity geometry result")
+    print("----------------------------")
+    print(f"resistance_ohm: {result.resistance_ohm:.6f}")
+    print(f"thickness_cm: {result.thickness_cm:.6f}")
+    print(f"area_cm2: {result.area_cm2:.6f}")
+    print(f"calculated_conductivity_s_cm: {result.calculated_conductivity_s_cm:.8f}")
+    if result.reported_conductivity_s_cm is not None:
+        print(f"reported_conductivity_s_cm: {result.reported_conductivity_s_cm:.8f}")
+        print(f"relative_difference_pct: {result.relative_difference_pct:.6f}")
         print(f"within_tolerance: {result.within_tolerance}")
     return 0
 
