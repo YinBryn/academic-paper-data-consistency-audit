@@ -37,6 +37,8 @@ jobs:
       run: |
         paper-audit --help
         paper-audit demo
+        paper-audit report --config examples/report_config.json
+        paper-audit report --config examples/report_config.json --output json
         paper-audit arrhenius --temperature-c 800 750 700 --resistance 0.022 0.053 0.103
         paper-audit statistics --values 4.65 4.83 4.84 4.76 4.77 --reported-mean 4.79 --reported-std 0.04
         paper-audit ratio --new 3.53 --baseline 2.74

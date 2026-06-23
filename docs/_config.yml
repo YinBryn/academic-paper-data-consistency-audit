@@ -6,6 +6,7 @@ markdown: kramdown
 header_pages:
   - getting_started.md
   - tutorial_complete_workflow.md
+  - report_workflow.md
   - cli_expected_outputs.md
   - structured_outputs.md
   - workflows.md
