@@ -27,12 +27,16 @@ pip install -e .
 
 ```bash
 paper-audit --help
+paper-audit demo
 ```
+
+The `demo` command runs a compact synthetic smoke test across representative checks. It is the fastest way to confirm that the installed CLI is working.
 
 Available subcommands:
 
 | Command | Purpose |
 |---|---|
+| `paper-audit demo` | Run a one-command synthetic smoke test |
 | `paper-audit arrhenius` | Fit Arrhenius data and report activation energy |
 | `paper-audit statistics` | Recalculate mean and standard deviation |
 | `paper-audit ratio` | Calculate improvement or reduction ratios |
@@ -47,6 +51,14 @@ Available subcommands:
 ```bash
 pytest tests/
 ```
+
+## Example: one-command demo
+
+```bash
+paper-audit demo
+```
+
+Expected interpretation: the demo runs representative checks using synthetic values only and prints a compact pass-style smoke-test report.
 
 ## Example
 
