@@ -14,6 +14,7 @@ The project focuses on technical clarification, reproducibility, and evidence-cl
 - Check Faradaic-efficiency and gas-production consistency.
 - Check conductivity geometry normalization.
 - Export selected command results as text, JSON, Markdown, or CSV.
+- Generate compact Markdown or JSON audit reports from JSON configs.
 - Compare figure, table, Supplementary Information, and source-data values.
 - Draft neutral single-issue technical comments.
 
@@ -23,12 +24,13 @@ The project focuses on technical clarification, reproducibility, and evidence-cl
 paper-audit demo
 ```
 
-For a full end-to-end example, start with the [complete synthetic audit workflow](tutorial_complete_workflow.md).
+For a full end-to-end example, start with the [complete synthetic audit workflow](tutorial_complete_workflow.md). For report generation, see the [report workflow](report_workflow.md).
 
 ## Main sections
 
 - [Getting started](getting_started.md)
 - [Complete synthetic audit workflow](tutorial_complete_workflow.md)
+- [Report workflow](report_workflow.md)
 - [CLI expected outputs](cli_expected_outputs.md)
 - [Structured outputs](structured_outputs.md)
 - [Audit workflows](workflows.md)
