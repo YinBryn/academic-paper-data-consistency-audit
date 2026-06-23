@@ -13,6 +13,7 @@ The project focuses on technical clarification, reproducibility, and evidence-cl
 - Check Rp/ASR component sums.
 - Check Faradaic-efficiency and gas-production consistency.
 - Check conductivity geometry normalization.
+- Export selected command results as text, JSON, Markdown, or CSV.
 - Compare figure, table, Supplementary Information, and source-data values.
 - Draft neutral single-issue technical comments.
 
@@ -29,6 +30,7 @@ For a full end-to-end example, start with the [complete synthetic audit workflow
 - [Getting started](getting_started.md)
 - [Complete synthetic audit workflow](tutorial_complete_workflow.md)
 - [CLI expected outputs](cli_expected_outputs.md)
+- [Structured outputs](structured_outputs.md)
 - [Audit workflows](workflows.md)
 - [Synthetic case studies](case_studies.md)
 - [Responsible use](responsible_use.md)
