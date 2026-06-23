@@ -1,0 +1,64 @@
+{
+  "title": "Synthetic Audit Report",
+  "description": "A compact report generated from synthetic checks.",
+  "checks": [
+    {
+      "id": "ivp_consistency",
+      "type": "dimensional",
+      "title": "I-V-P consistency",
+      "params": {
+        "power_density": 2.6,
+        "current_density": 2.0,
+        "voltage": 1.3,
+        "tolerance_pct": 1.0
+      }
+    },
+    {
+      "id": "resistance_component_sum",
+      "type": "resistance-sum",
+      "title": "Resistance component sum",
+      "params": {
+        "reported_total": 0.151,
+        "components": [0.052, 0.061, 0.038],
+        "tolerance_pct": 1.0
+      }
+    },
+    {
+      "id": "faradaic_efficiency",
+      "type": "faradaic-efficiency",
+      "title": "Faradaic efficiency recalculation",
+      "params": {
+        "current_density_a_cm2": 0.5,
+        "area_cm2": 1.0,
+        "measured_flow_ml_min": 3.30,
+        "electrons_per_molecule": 2,
+        "reported_fe_pct": 95.0,
+        "tolerance_pct_points": 5.0
+      }
+    },
+    {
+      "id": "conductivity_geometry",
+      "type": "conductivity-geometry",
+      "title": "Conductivity geometry normalization",
+      "params": {
+        "resistance_ohm": 10.0,
+        "thickness_mm": 0.33,
+        "diameter_mm": 6.0,
+        "reported_conductivity_s_cm": 0.01167,
+        "tolerance_pct": 5.0
+      }
+    },
+    {
+      "id": "batch_tolerance_report",
+      "type": "tolerance-report",
+      "title": "Batch tolerance summary",
+      "params": {
+        "csv": "../case_studies/tolerance_report/input.csv",
+        "reported_column": "reported_Rp_ohm_cm2",
+        "reference_column": "source_Rp_ohm_cm2",
+        "id_column": "sample",
+        "tolerance_pct": 5.0
+      }
+    }
+  ]
+}
