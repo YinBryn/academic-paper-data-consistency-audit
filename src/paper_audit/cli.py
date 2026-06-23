@@ -20,6 +20,7 @@ from .checks import (
     reduction_ratio,
     relative_difference_pct,
 )
+from .demo import run_demo
 from .tolerance_report import build_tolerance_report_from_csv, format_tolerance_report
 
 
@@ -81,7 +82,7 @@ def _add_faradaic_efficiency_parser(subparsers: argparse._SubParsersAction[argpa
     current_group.add_argument("--current-density-a-cm2", type=float, help="Current density in A/cm^2; requires --area-cm2.")
     parser.add_argument("--area-cm2", type=float, help="Active area in cm^2 when using --current-density-a-cm2.")
     parser.add_argument("--measured-flow-ml-min", type=float, required=True, help="Measured product gas flow in mL/min.")
-    parser.add_argument("--electrons-per-molecule", type=float, required=True, help="Electrons per product molecule, e.g. 2 for H2 or 4 for O2.")
+    parser.add_argument("--electrons-per-molecule", type=float, required=True, help="Electrons per product molecule, e.g. 2 or 4 depending on product stoichiometry.")
     parser.add_argument("--reported-fe-pct", type=float, help="Optional reported Faradaic efficiency in percent.")
     parser.add_argument("--tolerance-pct-points", type=float, default=5.0, help="Tolerance in FE percentage points.")
     parser.add_argument("--molar-volume-ml-mol", type=float, default=DEFAULT_MOLAR_VOLUME_ML_PER_MOL, help="Gas molar volume used for mL/min conversion.")
@@ -118,12 +119,18 @@ def _add_tolerance_report_parser(subparsers: argparse._SubParsersAction[argparse
     parser.set_defaults(func=_run_tolerance_report)
 
 
+def _add_demo_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
+    parser = subparsers.add_parser("demo", help="Run a one-command synthetic demo workflow.")
+    parser.set_defaults(func=_run_demo)
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="paper-audit",
         description="Physics-informed data consistency checks for materials electrochemistry papers.",
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
+    _add_demo_parser(subparsers)
     _add_arrhenius_parser(subparsers)
     _add_statistics_parser(subparsers)
     _add_ratio_parser(subparsers)
@@ -133,6 +140,11 @@ def build_parser() -> argparse.ArgumentParser:
     _add_conductivity_geometry_parser(subparsers)
     _add_tolerance_report_parser(subparsers)
     return parser
+
+
+def _run_demo(args: argparse.Namespace) -> int:
+    del args
+    return run_demo()
 
 
 def _run_arrhenius(args: argparse.Namespace) -> int:
