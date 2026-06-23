@@ -24,13 +24,14 @@ The project focuses on technical clarification, reproducibility, and evidence-cl
 paper-audit demo
 ```
 
-For a full end-to-end example, start with the [complete synthetic audit workflow](tutorial_complete_workflow.md). For report generation, see the [report workflow](report_workflow.md).
+For a full end-to-end example, start with the [complete synthetic audit workflow](tutorial_complete_workflow.md). For report generation, see the [report workflow](report_workflow.md). For a guided list of examples, see the [examples gallery](examples_gallery.md).
 
 ## Main sections
 
 - [Getting started](getting_started.md)
 - [Complete synthetic audit workflow](tutorial_complete_workflow.md)
 - [Report workflow](report_workflow.md)
+- [Examples gallery](examples_gallery.md)
 - [CLI expected outputs](cli_expected_outputs.md)
 - [Structured outputs](structured_outputs.md)
 - [Audit workflows](workflows.md)
