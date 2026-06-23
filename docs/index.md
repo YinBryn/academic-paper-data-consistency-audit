@@ -9,6 +9,10 @@ The project focuses on technical clarification, reproducibility, and evidence-cl
 - Recalculate activation energies from Arrhenius data.
 - Recalculate means, standard deviations, and reported statistics.
 - Check power-density consistency using `P = j × V`.
+- Generate batch source-data/table tolerance reports.
+- Check Rp/ASR component sums.
+- Check Faradaic-efficiency and gas-production consistency.
+- Check conductivity geometry normalization.
 - Compare figure, table, Supplementary Information, and source-data values.
 - Draft neutral single-issue technical comments.
 
@@ -28,6 +32,7 @@ paper-audit arrhenius \
 - [Responsible use](responsible_use.md)
 - [Roadmap](roadmap.md)
 - [Release checklist](release_checklist.md)
+- [Launch kit](launch_kit.md)
 
 ## Additional examples
 
