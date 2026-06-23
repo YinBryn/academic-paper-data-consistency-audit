@@ -32,3 +32,16 @@ jobs:
     - name: Run tests with pytest
       run: |
         pytest tests/
+
+    - name: Run installed CLI smoke tests
+      run: |
+        paper-audit --help
+        paper-audit demo
+        paper-audit arrhenius --temperature-c 800 750 700 --resistance 0.022 0.053 0.103
+        paper-audit statistics --values 4.65 4.83 4.84 4.76 4.77 --reported-mean 4.79 --reported-std 0.04
+        paper-audit ratio --new 3.53 --baseline 2.74
+        paper-audit dimensional --power-density 2.6 --current-density 2.0 --voltage 1.3
+        paper-audit tolerance-report --csv case_studies/tolerance_report/input.csv --reported-column reported_Rp_ohm_cm2 --reference-column source_Rp_ohm_cm2 --id-column sample --tolerance-pct 5.0
+        paper-audit resistance-sum --reported-total 0.180 --components 0.052 0.061 0.038 --tolerance-pct 1.0
+        paper-audit faradaic-efficiency --current-density-a-cm2 0.5 --area-cm2 1.0 --measured-flow-ml-min 3.30 --electrons-per-molecule 2 --reported-fe-pct 95.0
+        paper-audit conductivity-geometry --resistance-ohm 10.0 --thickness-mm 0.33 --diameter-mm 6.0 --reported-conductivity-s-cm 0.01167
