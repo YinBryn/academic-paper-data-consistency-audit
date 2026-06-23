@@ -22,6 +22,7 @@ from .checks import (
 )
 from .demo import run_demo
 from .output import OUTPUT_FORMATS, emit_record, emit_table
+from .report import build_report_from_json, format_report_json, format_report_markdown
 from .tolerance_report import build_tolerance_report_from_csv, format_tolerance_report
 
 
@@ -142,6 +143,13 @@ def _add_demo_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentPar
     parser.set_defaults(func=_run_demo)
 
 
+def _add_report_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
+    parser = subparsers.add_parser("report", help="Build a synthetic audit report from a JSON config file.")
+    parser.add_argument("--config", required=True, help="Path to a JSON report configuration file.")
+    parser.add_argument("--output", choices=["markdown", "json"], default="markdown", help="Report output format.")
+    parser.set_defaults(func=_run_report)
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="paper-audit",
@@ -149,6 +157,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
     _add_demo_parser(subparsers)
+    _add_report_parser(subparsers)
     _add_arrhenius_parser(subparsers)
     _add_statistics_parser(subparsers)
     _add_ratio_parser(subparsers)
@@ -163,6 +172,15 @@ def build_parser() -> argparse.ArgumentParser:
 def _run_demo(args: argparse.Namespace) -> int:
     del args
     return run_demo()
+
+
+def _run_report(args: argparse.Namespace) -> int:
+    report = build_report_from_json(args.config)
+    if args.output == "json":
+        print(format_report_json(report))
+    else:
+        print(format_report_markdown(report))
+    return 0
 
 
 def _run_arrhenius(args: argparse.Namespace) -> int:
