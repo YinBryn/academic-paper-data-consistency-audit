@@ -1,6 +1,6 @@
 # Contributing Guidelines
 
-Thank you for your interest in contributing to the Academic Paper Data Consistency Audit project. Contributions are welcome when they improve technical clarity, reproducibility, documentation quality, templates, synthetic examples, or CLI behavior.
+Thank you for your interest in contributing to Academic Paper Data Consistency Audit. Contributions are welcome when they improve technical clarity, reproducibility, documentation quality, templates, synthetic examples, report workflows, or CLI behavior.
 
 The project focuses on neutral technical clarification. It does not judge author intent and does not make ethical allegations.
 
@@ -21,7 +21,21 @@ Pull requests, issues, or examples that contain unsupported allegations or infla
 
 ---
 
-## 2. Issues
+## 2. Good First Contributions
+
+Useful first contributions include:
+
+- documentation clarity improvements
+- new synthetic case-study inputs
+- expected CLI output examples
+- tests for existing commands
+- small CLI help-text improvements
+- report configuration examples
+- Markdown or JSON output examples
+
+---
+
+## 3. Issues
 
 Use the issue templates under `.github/ISSUE_TEMPLATE/`:
 
@@ -39,7 +53,7 @@ For technical audit issues, follow the one-issue-per-comment principle:
 
 ---
 
-## 3. Case Studies and Examples
+## 4. Case Studies and Examples
 
 Synthetic examples are encouraged. They should be clearly marked as synthetic and should not include:
 
@@ -59,9 +73,16 @@ technical_issue.md
 neutral_comment.md
 ```
 
+For report-oriented examples, use:
+
+```text
+examples/report_config.json
+examples/cli_output/report_output.md
+```
+
 ---
 
-## 4. Pull Request Process
+## 5. Pull Request Process
 
 1. Fork the repository or create a feature branch from `main`.
 2. Keep each pull request focused on one purpose.
@@ -71,13 +92,15 @@ neutral_comment.md
 
 ```bash
 pytest tests/
+paper-audit demo
+paper-audit report --config examples/report_config.json
 ```
 
 6. Use the pull request template and complete the responsible-use checklist.
 
 ---
 
-## 5. Development Setup
+## 6. Development Setup
 
 ```bash
 git clone https://github.com/YinBryn/academic-paper-data-consistency-audit.git
@@ -87,10 +110,24 @@ source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 pip install -e .
 pytest tests/
+paper-audit demo
 ```
 
 ---
 
-## 6. Responsible Use
+## 7. Adding or Changing CLI Commands
+
+When adding a command or changing user-facing CLI behavior:
+
+- keep the calculation logic reusable under `src/paper_audit/`
+- add unit tests or CLI tests
+- preserve default text output when possible
+- add structured output support when it is useful
+- update docs and expected output examples
+- add CI smoke coverage after the command is stable
+
+---
+
+## 8. Responsible Use
 
 See `docs/responsible_use.md` and `CODE_OF_CONDUCT.md` for project-wide expectations.
