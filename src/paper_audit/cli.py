@@ -22,7 +22,7 @@ from .checks import (
 )
 from .demo import run_demo
 from .output import OUTPUT_FORMATS, emit_record, emit_table
-from .tolerance_report import build_tolerance_report_from_csv
+from .tolerance_report import build_tolerance_report_from_csv, format_tolerance_report
 
 
 def _add_output_argument(parser: argparse.ArgumentParser) -> None:
@@ -167,14 +167,25 @@ def _run_demo(args: argparse.Namespace) -> int:
 
 def _run_arrhenius(args: argparse.Namespace) -> int:
     result = arrhenius_fit(args.temperature_c, args.resistance, args.use_rt_correction)
+    label = "ln(R*T)" if args.use_rt_correction else "ln(R)"
     record = {
-        "fitted_quantity": "ln(R*T)" if args.use_rt_correction else "ln(R)",
+        "fitted_quantity": label,
         "slope": result.slope,
         "intercept": result.intercept,
         "r_squared": result.r_squared,
         "ea_ev": result.ea_ev,
     }
-    emit_record("Arrhenius fitting result", record, args.output)
+    if args.output != "text":
+        emit_record("Arrhenius fitting result", record, args.output)
+        return 0
+
+    print("Arrhenius fitting result")
+    print("------------------------")
+    print(f"Fitted quantity: {label}")
+    print(f"Slope: {result.slope:.6f}")
+    print(f"Intercept: {result.intercept:.6f}")
+    print(f"R^2: {result.r_squared:.6f}")
+    print(f"Ea: {result.ea_ev:.6f} eV")
     return 0
 
 
@@ -197,7 +208,31 @@ def _run_statistics(args: argparse.Namespace) -> int:
         record["reported_std_difference_pct"] = std_diff
         record["reported_std_within_tolerance"] = None if std_diff is None else std_diff <= args.tolerance_pct
 
-    emit_record("Statistics recalculation result", record, args.output)
+    if args.output != "text":
+        emit_record("Statistics recalculation result", record, args.output)
+        return 0
+
+    print("Statistics recalculation result")
+    print("-------------------------------")
+    print(f"n: {stats.n}")
+    print(f"mean: {stats.mean:.6f}")
+    if stats.sample_std is None:
+        print("sample_std: n/a")
+    else:
+        print(f"sample_std: {stats.sample_std:.6f}")
+    print(f"population_std: {stats.population_std:.6f}")
+
+    if args.reported_mean is not None:
+        print(f"reported_mean_difference_pct: {record['reported_mean_difference_pct']:.6f}")
+        print(f"reported_mean_within_tolerance: {record['reported_mean_within_tolerance']}")
+    if args.reported_std is not None:
+        std_diff = record["reported_std_difference_pct"]
+        if std_diff is None:
+            print("reported_std_difference_pct: n/a")
+            print("reported_std_within_tolerance: n/a")
+        else:
+            print(f"reported_std_difference_pct: {std_diff:.6f}")
+            print(f"reported_std_within_tolerance: {record['reported_std_within_tolerance']}")
     return 0
 
 
@@ -205,12 +240,17 @@ def _run_ratio(args: argparse.Namespace) -> int:
     if args.mode == "reduction":
         value = reduction_ratio(args.new, args.baseline)
         record = {"mode": "reduction", "ratio_pct": value}
-        title = "Reduction ratio result"
+        if args.output != "text":
+            emit_record("Reduction ratio result", record, args.output)
+        else:
+            print(f"Reduction ratio: {value:.6f}%")
     else:
         value = improvement_ratio(args.new, args.baseline)
         record = {"mode": "improvement", "ratio_pct": value}
-        title = "Improvement ratio result"
-    emit_record(title, record, args.output)
+        if args.output != "text":
+            emit_record("Improvement ratio result", record, args.output)
+        else:
+            print(f"Improvement ratio: {value:.6f}%")
     return 0
 
 
@@ -220,10 +260,16 @@ def _run_dimensional(args: argparse.Namespace) -> int:
         ok, message = check_diffusion_unit(args.diffusion_unit)
         record["diffusion_unit_valid"] = ok
         record["diffusion_unit_message"] = message
+        if args.output == "text":
+            print(f"diffusion_unit_valid: {ok}")
+            print(f"message: {message}")
     if args.potential_unit:
         ok, message = check_potential_unit(args.potential_unit)
         record["potential_unit_valid"] = ok
         record["potential_unit_message"] = message
+        if args.output == "text":
+            print(f"potential_unit_valid: {ok}")
+            print(f"message: {message}")
     p_args = (args.power_density, args.current_density, args.voltage)
     if any(value is not None for value in p_args):
         if not all(value is not None for value in p_args):
@@ -237,9 +283,14 @@ def _run_dimensional(args: argparse.Namespace) -> int:
         record["calculated_power_density"] = calculated
         record["difference_pct"] = diff
         record["relation_consistent"] = ok
+        if args.output == "text":
+            print(f"calculated_power_density: {calculated:.6f}")
+            print(f"difference_pct: {diff:.6f}")
+            print(f"relation_consistent: {ok}")
     if not record:
         record["checks_run"] = 0
-    emit_record("Dimensional consistency result", record, args.output)
+    if args.output != "text":
+        emit_record("Dimensional consistency result", record, args.output)
     return 0
 
 
@@ -252,7 +303,17 @@ def _run_resistance_sum(args: argparse.Namespace) -> int:
         "relative_difference_pct": result.relative_difference_pct,
         "within_tolerance": result.within_tolerance,
     }
-    emit_record("Resistance component-sum result", record, args.output)
+    if args.output != "text":
+        emit_record("Resistance component-sum result", record, args.output)
+        return 0
+
+    print("Resistance component-sum result")
+    print("-------------------------------")
+    print(f"reported_total: {result.reported_total:.6f}")
+    print(f"component_sum: {result.component_sum:.6f}")
+    print(f"absolute_difference: {result.absolute_difference:.6f}")
+    print(f"relative_difference_pct: {result.relative_difference_pct:.6f}")
+    print(f"within_tolerance: {result.within_tolerance}")
     return 0
 
 
@@ -282,7 +343,21 @@ def _run_faradaic_efficiency(args: argparse.Namespace) -> int:
         "fe_difference_pct_points": result.fe_difference_pct_points,
         "within_tolerance": result.within_tolerance,
     }
-    emit_record("Faradaic efficiency result", record, args.output)
+    if args.output != "text":
+        emit_record("Faradaic efficiency result", record, args.output)
+        return 0
+
+    print("Faradaic efficiency result")
+    print("--------------------------")
+    print(f"current_a: {result.current_a:.6f}")
+    print(f"electrons_per_molecule: {result.electrons_per_molecule:.6f}")
+    print(f"theoretical_flow_100pct_ml_min: {result.theoretical_flow_100pct_ml_min:.6f}")
+    print(f"measured_flow_ml_min: {result.measured_flow_ml_min:.6f}")
+    print(f"calculated_fe_pct: {result.calculated_fe_pct:.6f}")
+    if result.reported_fe_pct is not None:
+        print(f"reported_fe_pct: {result.reported_fe_pct:.6f}")
+        print(f"fe_difference_pct_points: {result.fe_difference_pct_points:.6f}")
+        print(f"within_tolerance: {result.within_tolerance}")
     return 0
 
 
@@ -310,7 +385,20 @@ def _run_conductivity_geometry(args: argparse.Namespace) -> int:
         "relative_difference_pct": result.relative_difference_pct,
         "within_tolerance": result.within_tolerance,
     }
-    emit_record("Conductivity geometry result", record, args.output)
+    if args.output != "text":
+        emit_record("Conductivity geometry result", record, args.output)
+        return 0
+
+    print("Conductivity geometry result")
+    print("----------------------------")
+    print(f"resistance_ohm: {result.resistance_ohm:.6f}")
+    print(f"thickness_cm: {result.thickness_cm:.6f}")
+    print(f"area_cm2: {result.area_cm2:.6f}")
+    print(f"calculated_conductivity_s_cm: {result.calculated_conductivity_s_cm:.8f}")
+    if result.reported_conductivity_s_cm is not None:
+        print(f"reported_conductivity_s_cm: {result.reported_conductivity_s_cm:.8f}")
+        print(f"relative_difference_pct: {result.relative_difference_pct:.6f}")
+        print(f"within_tolerance: {result.within_tolerance}")
     return 0
 
 
@@ -322,6 +410,10 @@ def _run_tolerance_report(args: argparse.Namespace) -> int:
         id_column=args.id_column,
         tolerance_pct=args.tolerance_pct,
     )
+    if args.output == "text":
+        print(format_tolerance_report(report))
+        return 0
+
     summary = {
         "total_rows": report.total_rows,
         "pass_count": report.pass_count,
