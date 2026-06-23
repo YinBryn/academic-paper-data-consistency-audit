@@ -5,9 +5,12 @@ markdown: kramdown
 
 header_pages:
   - getting_started.md
+  - tutorial_complete_workflow.md
+  - cli_expected_outputs.md
   - workflows.md
   - case_studies.md
   - responsible_use.md
   - roadmap.md
   - release_checklist.md
+  - public_project_checklist.md
   - launch_kit.md

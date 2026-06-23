@@ -19,19 +19,22 @@ The project focuses on technical clarification, reproducibility, and evidence-cl
 ## Quick command
 
 ```bash
-paper-audit arrhenius \
-  --temperature-c 800 750 700 \
-  --resistance 0.022 0.053 0.103
+paper-audit demo
 ```
+
+For a full end-to-end example, start with the [complete synthetic audit workflow](tutorial_complete_workflow.md).
 
 ## Main sections
 
 - [Getting started](getting_started.md)
+- [Complete synthetic audit workflow](tutorial_complete_workflow.md)
+- [CLI expected outputs](cli_expected_outputs.md)
 - [Audit workflows](workflows.md)
 - [Synthetic case studies](case_studies.md)
 - [Responsible use](responsible_use.md)
 - [Roadmap](roadmap.md)
 - [Release checklist](release_checklist.md)
+- [Public project checklist](public_project_checklist.md)
 - [Launch kit](launch_kit.md)
 
 ## Additional examples
