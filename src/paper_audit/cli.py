@@ -24,98 +24,110 @@ from .demo import run_demo
 from .tolerance_report import build_tolerance_report_from_csv, format_tolerance_report
 
 
-def _add_demo_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
-    parser = subparsers.add_parser("demo", help="Run a synthetic smoke-test demo.")
-    parser.set_defaults(func=_run_demo)
-
-
 def _add_arrhenius_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
-    parser = subparsers.add_parser("arrhenius", help="Fit Arrhenius values and report Ea.")
-    parser.add_argument("--temperature-c", nargs="+", type=float, required=True)
-    parser.add_argument("--resistance", nargs="+", type=float, required=True)
-    parser.add_argument("--use-rt-correction", action="store_true")
+    parser = subparsers.add_parser("arrhenius", help="Fit Arrhenius resistance/ASR data and report Ea.")
+    parser.add_argument("--temperature-c", nargs="+", type=float, required=True, help="Temperatures in Celsius.")
+    parser.add_argument("--resistance", nargs="+", type=float, required=True, help="Resistance, Rp, or ASR values.")
+    parser.add_argument("--use-rt-correction", action="store_true", help="Fit ln(R*T) instead of ln(R).")
     parser.set_defaults(func=_run_arrhenius)
 
 
 def _add_statistics_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
-    parser = subparsers.add_parser("statistics", help="Recalculate mean/std.")
-    parser.add_argument("--values", nargs="+", type=float, required=True)
-    parser.add_argument("--reported-mean", type=float)
-    parser.add_argument("--reported-std", type=float)
-    parser.add_argument("--population-std", action="store_true")
-    parser.add_argument("--tolerance-pct", type=float, default=1.0)
+    parser = subparsers.add_parser("statistics", help="Recalculate mean/std from replicate values.")
+    parser.add_argument("--values", nargs="+", type=float, required=True, help="Replicate values.")
+    parser.add_argument("--reported-mean", type=float, help="Optional reported mean value.")
+    parser.add_argument("--reported-std", type=float, help="Optional reported standard deviation.")
+    parser.add_argument("--population-std", action="store_true", help="Compare against population std instead of sample std.")
+    parser.add_argument("--tolerance-pct", type=float, default=1.0, help="Tolerance in percent.")
     parser.set_defaults(func=_run_statistics)
 
 
 def _add_ratio_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
     parser = subparsers.add_parser("ratio", help="Calculate improvement or reduction ratios.")
-    parser.add_argument("--new", type=float, required=True)
-    parser.add_argument("--baseline", type=float, required=True)
-    parser.add_argument("--mode", choices=["improvement", "reduction"], default="improvement")
+    parser.add_argument("--new", type=float, required=True, help="New or modified value.")
+    parser.add_argument("--baseline", type=float, required=True, help="Baseline value.")
+    parser.add_argument("--mode", choices=["improvement", "reduction"], default="improvement", help="Ratio convention to report.")
     parser.set_defaults(func=_run_ratio)
 
 
 def _add_dimensional_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
-    parser = subparsers.add_parser("dimensional", help="Run unit and P=jV checks.")
-    parser.add_argument("--diffusion-unit", type=str)
-    parser.add_argument("--potential-unit", type=str)
-    parser.add_argument("--power-density", type=float)
-    parser.add_argument("--current-density", type=float)
-    parser.add_argument("--voltage", type=float)
-    parser.add_argument("--tolerance-pct", type=float, default=1.0)
+    parser = subparsers.add_parser("dimensional", help="Run dimensional and I-V-P checks.")
+    parser.add_argument("--diffusion-unit", type=str, help="Check diffusion unit, e.g. 'cm^2/s'.")
+    parser.add_argument("--potential-unit", type=str, help="Check potential unit, e.g. 'V' or 'eV'.")
+    parser.add_argument("--power-density", type=float, help="Reported power density in W/cm^2.")
+    parser.add_argument("--current-density", type=float, help="Current density in A/cm^2.")
+    parser.add_argument("--voltage", type=float, help="Cell voltage in V.")
+    parser.add_argument("--tolerance-pct", type=float, default=1.0, help="Tolerance in percent.")
     parser.set_defaults(func=_run_dimensional)
 
 
 def _add_resistance_sum_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
-    parser = subparsers.add_parser("resistance-sum", help="Check a total against listed components.")
-    parser.add_argument("--reported-total", type=float, required=True)
-    parser.add_argument("--components", nargs="+", type=float, required=True)
-    parser.add_argument("--tolerance-pct", type=float, default=1.0)
+    parser = subparsers.add_parser(
+        "resistance-sum",
+        help="Check whether reported total Rp/ASR equals the sum of listed components.",
+    )
+    parser.add_argument("--reported-total", type=float, required=True, help="Reported total resistance, Rp, or ASR value.")
+    parser.add_argument("--components", nargs="+", type=float, required=True, help="Listed component resistances to sum.")
+    parser.add_argument("--tolerance-pct", type=float, default=1.0, help="Tolerance in percent relative to the component sum.")
     parser.set_defaults(func=_run_resistance_sum)
 
 
 def _add_faradaic_efficiency_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
-    parser = subparsers.add_parser("faradaic-efficiency", help="Calculate efficiency from current and flow.")
+    parser = subparsers.add_parser(
+        "faradaic-efficiency",
+        help="Calculate gas-flow-based Faradaic efficiency from current and electron stoichiometry.",
+    )
     current_group = parser.add_mutually_exclusive_group(required=True)
-    current_group.add_argument("--current-a", type=float)
-    current_group.add_argument("--current-density-a-cm2", type=float)
-    parser.add_argument("--area-cm2", type=float)
-    parser.add_argument("--measured-flow-ml-min", type=float, required=True)
-    parser.add_argument("--electrons-per-molecule", type=float, required=True)
-    parser.add_argument("--reported-fe-pct", type=float)
-    parser.add_argument("--tolerance-pct-points", type=float, default=5.0)
-    parser.add_argument("--molar-volume-ml-mol", type=float, default=DEFAULT_MOLAR_VOLUME_ML_PER_MOL)
+    current_group.add_argument("--current-a", type=float, help="Total current in A.")
+    current_group.add_argument("--current-density-a-cm2", type=float, help="Current density in A/cm^2; requires --area-cm2.")
+    parser.add_argument("--area-cm2", type=float, help="Active area in cm^2 when using --current-density-a-cm2.")
+    parser.add_argument("--measured-flow-ml-min", type=float, required=True, help="Measured product gas flow in mL/min.")
+    parser.add_argument("--electrons-per-molecule", type=float, required=True, help="Electrons per product molecule, e.g. 2 or 4 depending on product stoichiometry.")
+    parser.add_argument("--reported-fe-pct", type=float, help="Optional reported Faradaic efficiency in percent.")
+    parser.add_argument("--tolerance-pct-points", type=float, default=5.0, help="Tolerance in FE percentage points.")
+    parser.add_argument("--molar-volume-ml-mol", type=float, default=DEFAULT_MOLAR_VOLUME_ML_PER_MOL, help="Gas molar volume used for mL/min conversion.")
     parser.set_defaults(func=_run_faradaic_efficiency)
 
 
 def _add_conductivity_geometry_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
-    parser = subparsers.add_parser("conductivity-geometry", help="Calculate conductivity from geometry.")
-    parser.add_argument("--resistance-ohm", type=float, required=True)
+    parser = subparsers.add_parser(
+        "conductivity-geometry",
+        help="Calculate conductivity from resistance, thickness, and electrode area.",
+    )
+    parser.add_argument("--resistance-ohm", type=float, required=True, help="Measured resistance in ohm.")
     thickness_group = parser.add_mutually_exclusive_group(required=True)
-    thickness_group.add_argument("--thickness-cm", type=float)
-    thickness_group.add_argument("--thickness-mm", type=float)
+    thickness_group.add_argument("--thickness-cm", type=float, help="Sample thickness in cm.")
+    thickness_group.add_argument("--thickness-mm", type=float, help="Sample thickness in mm.")
     area_group = parser.add_mutually_exclusive_group(required=True)
-    area_group.add_argument("--area-cm2", type=float)
-    area_group.add_argument("--diameter-mm", type=float)
-    parser.add_argument("--reported-conductivity-s-cm", type=float)
-    parser.add_argument("--tolerance-pct", type=float, default=5.0)
+    area_group.add_argument("--area-cm2", type=float, help="Electrode/sample area in cm^2.")
+    area_group.add_argument("--diameter-mm", type=float, help="Circular electrode/sample diameter in mm.")
+    parser.add_argument("--reported-conductivity-s-cm", type=float, help="Optional reported conductivity in S/cm.")
+    parser.add_argument("--tolerance-pct", type=float, default=5.0, help="Tolerance in percent.")
     parser.set_defaults(func=_run_conductivity_geometry)
 
 
 def _add_tolerance_report_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
-    parser = subparsers.add_parser("tolerance-report", help="Compare two numeric CSV columns.")
-    parser.add_argument("--csv", required=True)
-    parser.add_argument("--reported-column", required=True)
-    parser.add_argument("--reference-column", required=True)
-    parser.add_argument("--id-column")
-    parser.add_argument("--tolerance-pct", type=float, default=5.0)
+    parser = subparsers.add_parser(
+        "tolerance-report",
+        help="Batch compare reported values against source/reference values from a CSV file.",
+    )
+    parser.add_argument("--csv", required=True, help="CSV file containing reported and reference columns.")
+    parser.add_argument("--reported-column", required=True, help="Column containing reported values.")
+    parser.add_argument("--reference-column", required=True, help="Column containing source-data or reference values.")
+    parser.add_argument("--id-column", help="Optional row identifier column, e.g. sample or condition.")
+    parser.add_argument("--tolerance-pct", type=float, default=5.0, help="Relative tolerance in percent.")
     parser.set_defaults(func=_run_tolerance_report)
+
+
+def _add_demo_parser(subparsers: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
+    parser = subparsers.add_parser("demo", help="Run a one-command synthetic demo workflow.")
+    parser.set_defaults(func=_run_demo)
 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="paper-audit",
-        description="Technical consistency checks for materials electrochemistry.",
+        description="Physics-informed data consistency checks for materials electrochemistry papers.",
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
     _add_demo_parser(subparsers)
