@@ -104,10 +104,37 @@ pip install -r requirements.txt
 pip install -e .
 
 paper-audit --help
+paper-audit demo
 pytest
 ```
 
+Use `paper-audit demo` as the fastest smoke test after installation. It runs representative synthetic checks and prints a compact pass-style report.
+
 You can use either the installable CLI (`paper-audit`) or the standalone scripts under `scripts/`.
+
+### Example: one-command demo
+
+```bash
+paper-audit demo
+```
+
+Representative output:
+
+```text
+Academic Paper Data Consistency Audit Demo
+===========================================
+Synthetic data only. No real article data is used.
+
+[PASS] Arrhenius recalculation - Ea=...
+[PASS] Statistics recalculation - n=5, mean=...
+[PASS] I-V-P dimensional check - calculated_power_density=...
+[PASS] Resistance component-sum check - component_sum=...
+[PASS] Faradaic efficiency check - calculated_FE=...
+[PASS] Conductivity geometry check - calculated_sigma=...
+[PASS] Batch tolerance report - rows=2, pass=2, fail=0
+
+Demo completed: 7 synthetic checks passed.
+```
 
 ### Example: Arrhenius fitting
 
